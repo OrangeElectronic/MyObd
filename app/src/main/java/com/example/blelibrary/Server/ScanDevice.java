@@ -52,6 +52,7 @@ public class ScanDevice {
     }
     //-----------------------method1檢查權限------------------------------------------
     public void initPermission(Activity context) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //检查权限
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -77,19 +78,8 @@ public class ScanDevice {
             mBluetoothAdapter.enable();
         }
     }
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == 1) {
-//            if(grantResults[0]!=0){
-//                Toast.makeText(this, "請先打開定位系統", Toast.LENGTH_LONG).show();
-//            }else{  RequestPermission();}
-//        }
-//    }
-
     //----------method2開始掃描
     public void scanLeDevice( boolean enable) {
-
         if (enable) {
             if(!EventBus.getDefault().isRegistered(activity)){EventBus.getDefault().register(activity);}
             mLeDevices.clear();
@@ -100,4 +90,5 @@ public class ScanDevice {
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
         }
     }
+
 }

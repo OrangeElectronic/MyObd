@@ -32,7 +32,9 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.blelibrary.EventBus.ReadData;
 import com.example.blelibrary.EventBus.RebackData;
+import com.example.blelibrary.EventBus.WriteData;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -106,35 +108,16 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-                byte []b=characteristic.getValue();
-                String a="";
-                for(int i=0;i<b.length;i++){
-                    a=a+ String.format("%02X ", b[i])+":";
-                }
-                Log.w("show", "讀取成功:"+a );
-            }
+            EventBus.getDefault().post(new ReadData(characteristic.getValue()));
         }
 @Override
 public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic characteristic,int status){
-    byte []b=characteristic.getValue();
-    String a="";
-    for(int i=0;i<b.length;i++){
-        a=a+ String.format("%02X ", b[i])+":";
-    }
-    Log.w("show", "傳送數據:"+a );
+    EventBus.getDefault().post(new WriteData(characteristic.getValue()));
 }
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
-            broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
-            byte []b=characteristic.getValue();
-            String a="";
-            for(int i=0;i<b.length;i++){
-                a=a+ String.format("%02X ", b[i])+":";
-            }
-            EventBus.getDefault().post(new RebackData(b));
+            EventBus.getDefault().post(new RebackData(characteristic.getValue()));
         }
     };
 

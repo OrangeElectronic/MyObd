@@ -120,8 +120,7 @@ Log.w("s","連線");
             }
         }
     }
-    public void WriteCmd(String write,String uuid){
-
+    public boolean WriteCmd(String write,String uuid){
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
     Log.w("char",""+a.getUuid());
     if(UUID.fromString(uuid).equals(a.getUuid())){
@@ -129,9 +128,10 @@ for(BluetoothGattCharacteristic a:mGattCharacteristics){
         mBluetoothLeService.setCharacteristicNotification(mNotifyCharacteristic, true);
         mNotifyCharacteristic.setValue(StringHexToByte(write));
         mBluetoothLeService.writeCharacteristic(mNotifyCharacteristic);
-        break;
+        return true;
     }
 }
+return false;
     }
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();

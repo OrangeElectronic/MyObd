@@ -6,8 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.blelibrary.EventBus.ReadData;
 import com.example.blelibrary.EventBus.RebackData;
 import com.example.blelibrary.EventBus.SerchDevice;
+import com.example.blelibrary.EventBus.WriteData;
 import com.example.blelibrary.Server.BleServiceControl;
 import com.example.blelibrary.Server.ScanDevice;
 import com.example.blelibrary.tool.FormatConvert;
@@ -27,18 +30,18 @@ public class MainActivity extends AppCompatActivity {
         scan.setmBluetoothAdapter(this);
         timer=new Timer();
         timer.schedule(new tt(),0,2000);
+
     }
         @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
             if(grantResults[0]!=0){
-                Toast.makeText(this, "請先打開定位系統", Toast.LENGTH_LONG).show();
-                scan.initPermission(this);
-            }else{scan.RequestPermission();}
+                Toast.makeText(this, "必須打開定位才能啟用此服務", Toast.LENGTH_LONG).show();
+            }else{ scan.RequestPermission();}
         }
     }
-    /////////////////找到裝置
+//----------------------------------------When find Device it will callback on here----------------------------------------
 @Subscribe
     public void Event(SerchDevice a){
         try{
@@ -49,17 +52,31 @@ public class MainActivity extends AppCompatActivity {
             }
         }catch (Exception e){Log.w("error",e.getMessage());}
 }
-    //////////////////////返回數據
+//----------------------------------------Use bleServiceControl.WriteCmd(HexString,uuid).to write Data ----------------------------------------
   @Subscribe
   public void Event(RebackData a){
       try{
-          Log.w("show","返回數據:"+ FormatConvert.ByteToStringbyte(a.getReback()));
+          Log.w("WriteReback","Data:"+ FormatConvert.ByteToStringbyte(a.getReback()));
       }catch (Exception e){Log.w("error",e.getMessage());}
   }
-
+  //----------------------------------------Use bleServiceControl.ReadCmd(uuid).to read Data----------------------------------------
+  @Subscribe
+  public void Event(ReadData a){
+      try{
+          Log.w("ReadReback","Data:"+ FormatConvert.ByteToStringbyte(a.getReback()));
+      }catch (Exception e){Log.w("error",e.getMessage());}
+  }
+  //----------------------------------------Use bleServiceControl.WriteCmd will callbcak this method to confirm is writed susscessfully----------------------------------------
+    @Subscribe
+    public void Event(WriteData a){
+        try{
+            Log.w("Write","Data:"+ FormatConvert.ByteToStringbyte(a.data()));
+        }catch (Exception e){Log.w("error",e.getMessage());}
+    }
 public class tt extends TimerTask {
     @Override
     public void run() {
+        bleServiceControl.ReadCmd("00002a00-0000-1000-8000-00805f9b34fb");
         bleServiceControl.WriteCmd("53a901fffffffffb0a","00008d81-0000-1000-8000-00805f9b34fb");
     }
 }
