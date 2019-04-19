@@ -32,6 +32,10 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.blelibrary.EventBus.RebackData;
+
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -130,7 +134,7 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
             for(int i=0;i<b.length;i++){
                 a=a+ String.format("%02X ", b[i])+":";
             }
-            Log.w("show", "返回數據:"+a );
+            EventBus.getDefault().post(new RebackData(b));
         }
     };
 
@@ -142,7 +146,7 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
-
+        final byte[] data = characteristic.getValue();
         // This is special handling for the Heart Rate Measurement profile.  Data parsing is
         // carried out as per profile specifications:
         // http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
@@ -158,16 +162,9 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
             }
             final int heartRate = characteristic.getIntValue(format, 1);
             Log.d(TAG, String.format("Received heart rate: %d", heartRate));
-            intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));
+            intent.putExtra(EXTRA_DATA, data);
         } else {
-            // For all other profiles, writes the data formatted in HEX.
-            final byte[] data = characteristic.getValue();
-            if (data != null && data.length > 0) {
-                final StringBuilder stringBuilder = new StringBuilder(data.length);
-                for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-            }
+            intent.putExtra(EXTRA_DATA, data);
         }
         sendBroadcast(intent);
     }
