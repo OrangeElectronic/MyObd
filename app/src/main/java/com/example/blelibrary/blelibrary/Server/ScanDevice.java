@@ -1,4 +1,4 @@
-package com.example.blelibrary.Server;
+package com.example.blelibrary.blelibrary.Server;
 
 import android.Manifest;
 import android.app.Activity;
@@ -8,13 +8,11 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.blelibrary.EventBus.SerchDevice;
-import com.example.blelibrary.R;
+import com.example.blelibrary.blelibrary.EventBus.SerchDevice;
 
 import org.greenrobot.eventbus.EventBus;
 

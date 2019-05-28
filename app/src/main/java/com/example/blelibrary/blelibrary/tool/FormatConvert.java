@@ -1,4 +1,4 @@
-package com.example.blelibrary.tool;
+package com.example.blelibrary.blelibrary.tool;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

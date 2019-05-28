@@ -7,13 +7,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.blelibrary.EventBus.ReadData;
-import com.example.blelibrary.EventBus.RebackData;
-import com.example.blelibrary.EventBus.SerchDevice;
-import com.example.blelibrary.EventBus.WriteData;
-import com.example.blelibrary.Server.BleServiceControl;
-import com.example.blelibrary.Server.ScanDevice;
-import com.example.blelibrary.tool.FormatConvert;
+import com.example.blelibrary.blelibrary.EventBus.ConnectState;
+import com.example.blelibrary.blelibrary.EventBus.ReadData;
+import com.example.blelibrary.blelibrary.EventBus.RebackData;
+import com.example.blelibrary.blelibrary.EventBus.SerchDevice;
+import com.example.blelibrary.blelibrary.EventBus.WriteData;
+import com.example.blelibrary.blelibrary.Server.BleServiceControl;
+import com.example.blelibrary.blelibrary.Server.ScanDevice;
+import com.example.blelibrary.blelibrary.tool.FormatConvert;
 import org.greenrobot.eventbus.Subscribe;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         scan.setmBluetoothAdapter(this);
-        timer=new Timer();
-        timer.schedule(new tt(),0,2000);
+//        timer=new Timer();
+//        timer.schedule(new tt(),0,2000);
 
     }
         @Override
@@ -40,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "必須打開定位才能啟用此服務", Toast.LENGTH_LONG).show();
             }else{ scan.RequestPermission();}
         }
+    }
+    //----------------------------------------Connect state----------------------------------------
+    @Subscribe
+    public void Event(ConnectState a){
+      a.getReback();
     }
 //----------------------------------------When find Device it will callback on here----------------------------------------
 @Subscribe
@@ -76,8 +82,8 @@ public class MainActivity extends AppCompatActivity {
 public class tt extends TimerTask {
     @Override
     public void run() {
-        bleServiceControl.ReadCmd("00002a00-0000-1000-8000-00805f9b34fb");
-        bleServiceControl.WriteCmd("53a901fffffffffb0a","00008d81-0000-1000-8000-00805f9b34fb");
+//        bleServiceControl.ReadCmd("00002a00-0000-1000-8000-00805f9b34fb");
+            bleServiceControl.WriteCmd("53a901fffffffffb0a");
     }
 }
 
