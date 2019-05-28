@@ -17,7 +17,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ScanBle"></activity>
+        <activity
+            android:name=".ScanBle"
+            android:theme="@style/SwipTheme" />
+        <activity android:name=".Activity.YearActivity" />
+        <activity android:name=".Activity.SelectModel" />
+        <activity android:name=".Activity.SelectMmy" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

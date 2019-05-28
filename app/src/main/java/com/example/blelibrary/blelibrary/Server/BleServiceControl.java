@@ -125,6 +125,21 @@ Log.w("s","連線");
             }
         }
     }
+  public void WriteArray(final ArrayList<String> a){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for(final String q:a){
+                    WriteCmd(q);
+                        try {
+                            Thread.currentThread().sleep(200);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+  }
     public boolean WriteCmd(String write){
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
     Log.w("char",""+a.getUuid());

@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
@@ -67,6 +68,9 @@ public class ScanDevice {
     }
     public void RequestPermission(){
          mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(!isLocServiceEnable(activity)){
+            Toast.makeText(activity,"請打開定位功能",Toast.LENGTH_SHORT).show();
+        }
         boolean originalBluetooth = (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled());
         if (originalBluetooth) {
             scanLeDevice(true);
@@ -75,6 +79,15 @@ public class ScanDevice {
             scanLeDevice(true);
             mBluetoothAdapter.enable();
         }
+    }
+    public static boolean isLocServiceEnable(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean network = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (gps || network) {
+            return true;
+        }
+        return false;
     }
     //----------method2開始掃描
     public void scanLeDevice( boolean enable) {
