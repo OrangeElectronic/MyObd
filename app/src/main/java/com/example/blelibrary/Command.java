@@ -12,7 +12,7 @@ import java.util.Date;
 import static com.example.blelibrary.MainActivity.bleServiceControl;
 import static com.example.blelibrary.blelibrary.tool.FormatConvert.StringHexToByte;
 public class Command {
-    public static String RX="nodata";
+    public static String RX="nodatas";
     public static String WRITE_SUCCESS="F502000300F40A";
     public static String Program_Flash_Fail="F502000300F40A";
     public static String VERIFY_FAIL="F502000300F40A";
