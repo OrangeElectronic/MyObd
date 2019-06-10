@@ -18,6 +18,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
+import static com.example.blelibrary.MainActivity.bleServiceControl;
+import static com.example.blelibrary.MainActivity.scan;
+
 public class ScanBle extends AppCompatActivity {
     ArrayList<BluetoothDevice> ble=new ArrayList<>();
     SelectBle selectBle=new SelectBle(ble,this);
@@ -40,6 +43,7 @@ public class ScanBle extends AppCompatActivity {
             Log.w("error",e.getMessage());}
     }
     public void close(View view){
+        scan.scanLeDevice(false);
         this.finish();
     }
 }

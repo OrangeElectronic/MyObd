@@ -97,7 +97,6 @@ public class ScanDevice {
             if (mBluetoothAdapter == null) {Log.w("ss","是null");}
             mBluetoothAdapter.startLeScan(mLeScanCallback);
         } else {
-            if(EventBus.getDefault().isRegistered(activity)){EventBus.getDefault().unregister(activity);}
             mBluetoothAdapter.stopLeScan(mLeScanCallback);
         }
     }

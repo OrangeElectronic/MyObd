@@ -217,7 +217,9 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.");
             return false;
         }
-
+        if(mBluetoothGatt!=null){
+            disconnect();
+        }
         // Previously connected device.  Try to reconnect.
         if (mBluetoothDeviceAddress != null && address.equals(mBluetoothDeviceAddress)
                 && mBluetoothGatt != null) {

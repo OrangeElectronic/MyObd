@@ -13,7 +13,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.blelibrary.MainActivity
+import com.example.blelibrary.MainActivity.*
 import com.example.blelibrary.R
+import com.example.blelibrary.blelibrary.Server.BleServiceControl
 import java.util.ArrayList
 
 
@@ -31,7 +33,12 @@ class SelectBle(private val a:ArrayList<BluetoothDevice>,private val activity: A
 
         holder.address.text=a[position].address
         holder.mView.setOnClickListener(View.OnClickListener {
-            MainActivity.blename=a[position].address
+            scan.scanLeDevice(false)
+            bleServiceControl.connect(a[position].address, MainActivity.activity)
+            message.add("Trying to connect  for "+a[position].name)
+            adapter.notifyDataSetChanged()
+            blename=a[position].name
+            MainActivity.re.scrollToPosition(message.size - 1)
             activity.finish()
         })
     }

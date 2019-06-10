@@ -1,4 +1,5 @@
 package com.example.blelibrary;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -29,21 +30,23 @@ import java.util.ArrayList;
 import static com.example.blelibrary.Command.getDateTime;
 import static com.example.blelibrary.Command.setTireId;
 public class MainActivity extends AppCompatActivity {
-    ScanDevice scan=new ScanDevice();
-    ArrayList<String> message=new ArrayList<>();
-    MsAdapter adapter=new MsAdapter(message);
+    public static ScanDevice scan=new ScanDevice();
+    public static ArrayList<String> message=new ArrayList<>();
+    public static MsAdapter adapter=new MsAdapter(message);
     EditText edit_id1,edit_id2,edit_id3,edit_id4;
+    public static Activity activity;
     Button write_btn;
-    RecyclerView re;
+    public static RecyclerView re;
     Toolbar toolbar;
     public static String blename="";
-    BleServiceControl bleServiceControl=new BleServiceControl();
+    public static BleServiceControl bleServiceControl=new BleServiceControl();
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         scan.setmBluetoothAdapter(this);
+        activity=this;
         toolbar=findViewById(R.id.toolbar2);
         edit_id1=findViewById(R.id.edit_id1);
         edit_id2=findViewById(R.id.edit_id2);
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setActionBar(toolbar);
         setTitle("");
         re=findViewById(R.id.re);
-        re.setLayoutManager(new LinearLayoutManager(this));
+        re.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,true));
         re.setAdapter(adapter);
         setui(false);
     }
@@ -66,53 +69,57 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if(grantResults[0]!=0){
                 Toast.makeText(this, "必須打開定位才能啟用此服務", Toast.LENGTH_LONG).show();
-            }else{ scan.RequestPermission();}
+            }
         }
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(SerchDevice a){
-        try{
-            if(a.getDevic().getAddress().equals(blename)){
-                Toast.makeText(this, "找到新裝置"+a.getDevic().getName(), Toast.LENGTH_LONG).show();
-                scan.scanLeDevice(false);
-                bleServiceControl.connect(a.getDevic().getAddress(),this);
-                message.add("找到新裝置"+a.getDevic().getName()+","+getDateTime());
-                adapter.notifyDataSetChanged();
-            }
-        }catch (Exception e){Log.w("error",e.getMessage());}
+//        try{
+//            if(a.getDevic().getAddress().equals(blename)){
+//                Toast.makeText(this, "找到新裝置"+a.getDevic().getName(), Toast.LENGTH_LONG).show();
+//                scan.scanLeDevice(false);
+//                bleServiceControl.connect(a.getDevic().getAddress(),this);
+//                message.add("找到新裝置"+a.getDevic().getName()+","+getDateTime());
+//                adapter.notifyDataSetChanged();
+//            }
+//        }catch (Exception e){Log.w("error",e.getMessage());}
     }
     //----------------------------------------Connect state----------------------------------------
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(ConnectState a){
-if(a.getReback()){   message.add("Connect::"+blename+","+getDateTime());}else{   message.add("Disconnect::"+blename+","+getDateTime());}
+if(a.getReback()){   message.add(0,"Connect::"+blename+","+getDateTime());}else{   message.add("Disconnect::"+blename+","+getDateTime());}
 if(a.getReback()){setui(true);}else{setui(false);}
         adapter.notifyDataSetChanged();
+re.scrollToPosition(0);
     }
 //----------------------------------------Use bleServiceControl.WriteCmd(HexString,uuid).to write Data ----------------------------------------
 @Subscribe(threadMode = ThreadMode.MAIN)
   public void Event(RebackData a){
       try{
-          Log.w("WriteReback","Data:"+ FormatConvert.ByteToStringbyte(a.getReback())+","+getDateTime());
-          message.add("RX:"+FormatConvert.ByteToStringbyte(a.getReback())+","+getDateTime());
+          Log.w("WriteReback","Data:"+ FormatConvert.bytesToHex(a.getReback())+","+getDateTime());
+          message.add(0,"RX:"+FormatConvert.bytesToHex(a.getReback())+","+getDateTime());
           adapter.notifyDataSetChanged();
+          re.scrollToPosition(0);
       }catch (Exception e){Log.w("error",e.getMessage());}
   }
   //----------------------------------------Use bleServiceControl.ReadCmd(uuid).to read Data----------------------------------------
   @Subscribe(threadMode = ThreadMode.MAIN)
   public void Event(ReadData a){
       try{
-          Log.w("ReadReback","Data:"+ FormatConvert.ByteToStringbyte(a.getReback())+","+getDateTime());
-          message.add("RX:"+FormatConvert.ByteToStringbyte(a.getReback())+","+getDateTime());
+          Log.w("ReadReback","Data:"+ FormatConvert.bytesToHex(a.getReback())+","+getDateTime());
+          message.add(0,"RX:"+FormatConvert.bytesToHex(a.getReback())+","+getDateTime());
           adapter.notifyDataSetChanged();
+          re.scrollToPosition(0);
       }catch (Exception e){Log.w("error",e.getMessage());}
   }
   //----------------------------------------Use bleServiceControl.WriteCmd will callbcak this method to confirm is writed susscessfully----------------------------------------
   @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(WriteData a){
         try{
-            Log.w("Write","Data:"+ FormatConvert.ByteToStringbyte(a.data()));
-            message.add("TX:"+FormatConvert.ByteToStringbyte(a.data())+","+getDateTime());
+            Log.w("Write","Data:"+ FormatConvert.bytesToHex(a.data()));
+            message.add(0,"TX:"+FormatConvert.bytesToHex(a.data())+","+getDateTime());
             adapter.notifyDataSetChanged();
+            re.scrollToPosition(0);
         }catch (Exception e){Log.w("error",e.getMessage());}
     }
 public void onClick(View view){
@@ -131,12 +138,15 @@ switch (view.getId()){
         break;
     case R.id.select_ble:
         scan.scanLeDevice(true);
-        blename="";
         Intent intent=new Intent(this,ScanBle.class);
         startActivity(intent);
         break;
     case R.id.select_mmy:
         Intent i=new Intent(this, SelectMmy.class);
         startActivity(i);
+        break;
+    case R.id.action:
+        Intent in=new Intent(this, SelectAction.class);
+        startActivity(in);
         break;
 } }}

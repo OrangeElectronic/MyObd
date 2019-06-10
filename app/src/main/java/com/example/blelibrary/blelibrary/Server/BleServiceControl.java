@@ -27,8 +27,8 @@ import static com.example.blelibrary.blelibrary.tool.FormatConvert.StringHexToBy
 public class BleServiceControl {
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
-    private final UUID RXUUID=UUID.fromString("00008D82-0000-1000-8000-00805F9B34FB");
-    private final UUID TXUUID=UUID.fromString("00008D81-0000-1000-8000-00805F9B34FB");
+    private final UUID RXUUID=UUID.fromString("00008D81-0000-1000-8000-00805F9B34FB");
+    private final UUID TXUUID=UUID.fromString("00008D82-0000-1000-8000-00805F9B34FB");
     private BluetoothLeService mBluetoothLeService;
     private ArrayList<BluetoothGattCharacteristic> mGattCharacteristics =
             new ArrayList<>();
@@ -52,11 +52,11 @@ public class BleServiceControl {
     };
     public void connect(final String mDeviceAddress, Activity activity){
         this.mDeviceAddress=mDeviceAddress;
+        if(mBluetoothLeService!=null){ mBluetoothLeService.connect(mDeviceAddress);}
         if(!EventBus.getDefault().isRegistered(activity)){EventBus.getDefault().register(activity);}
         activity.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         Intent gattServiceIntent = new Intent(activity, BluetoothLeService.class);
         activity.bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
-
     }
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
@@ -132,7 +132,7 @@ Log.w("s","連線");
                     for(final String q:a){
                     WriteCmd(q);
                         try {
-                            Thread.currentThread().sleep(200);
+                            Thread.currentThread().sleep(100);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -142,7 +142,7 @@ Log.w("s","連線");
   }
     public boolean WriteCmd(String write){
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
-    Log.w("char",""+a.getUuid());
+//    Log.w("char",""+a.getUuid());
     if(TXUUID.equals(a.getUuid())){
         mNotifyCharacteristic=a;
         mNotifyCharacteristic.setValue(StringHexToByte(write));
@@ -152,6 +152,9 @@ for(BluetoothGattCharacteristic a:mGattCharacteristics){
 }
 return false;
     }
+    public void disconnect(){
+        if(mBluetoothLeService!=null){mBluetoothLeService.disconnect();}
+        }
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_GATT_CONNECTED);
