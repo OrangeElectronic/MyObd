@@ -18,7 +18,10 @@ class SelectAction : AppCompatActivity() {
             R.id.reboot->{Reboot()
             this.close()}
             R.id.Writer->{
-                WriteFlash(this,MainActivity.bleServiceControl)
+                WriteFlash(this,"Sienta2016.S19")
+            }
+            R.id.waitmode->{
+                WriteFlash(this,"TestObd.srec")
             }
         }
     }

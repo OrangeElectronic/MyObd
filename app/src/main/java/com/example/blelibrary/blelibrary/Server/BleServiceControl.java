@@ -141,6 +141,7 @@ Log.w("s","連線");
             }).start();
   }
     public boolean WriteCmd(String write){
+
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
 //    Log.w("char",""+a.getUuid());
     if(TXUUID.equals(a.getUuid())){

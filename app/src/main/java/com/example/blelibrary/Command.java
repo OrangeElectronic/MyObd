@@ -12,10 +12,11 @@ import java.util.Date;
 import static com.example.blelibrary.MainActivity.bleServiceControl;
 import static com.example.blelibrary.blelibrary.tool.FormatConvert.StringHexToByte;
 public class Command {
-    public static String RX="nodatas";
+    public static String RX="nodata";
+    public static byte[] RXDATA=new byte[0];
     public static String WRITE_SUCCESS="F502000300F40A";
-    public static String Program_Flash_Fail="F502000300F40A";
-    public static String VERIFY_FAIL="F502000300F40A";
+    public static String Program_Flash_Fail="F502000302F60A";
+    public static String VERIFY_FAIL="F502000303F70A";
     //自動設定checkbyte
     public static String addcheckbyte(String com){
         byte a[]=StringHexToByte(com);
@@ -38,14 +39,12 @@ public class Command {
     }
    private static Handler handler=new Handler() ;
 // 燒寫&amp;驗證Flash
-    public static void WriteFlash(final Context context, final BleServiceControl bleServiceControl){
-       final int Longer=126;
-       bleServiceControl.WriteCmd(addcheckbyte("0A0200803A45323E3136313E3645334534313C3B303F3B3F30303B3F39413A3E38333E34464437353E46343E3446313E363E463437354439413A31343C444541303B3F3B303F3B3F30303B3F3E3136413A3934313C3142363B3F30303B3F3B303F3B3F30313E3641393A313C344231363B303F3B3F30303B3F3B303F3B3F30453A3CAAF5"));
+    public static void WriteFlash(final Context context,final String FileName){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try{
-                    InputStreamReader fr = new InputStreamReader(context.getResources().getAssets().open("Sienta2016.S19"));
+                    InputStreamReader fr = new InputStreamReader(context.getResources().getAssets().open(FileName));
                     BufferedReader br = new BufferedReader(fr);
                     StringBuilder sb = new StringBuilder();
                     while (br.ready()) {
@@ -53,27 +52,38 @@ public class Command {
                         sb.append(s);
                     }
                     int Long=0;
-                    if(sb.length()%126 == 0){Long=sb.length()/126;
-                    }else{Long=sb.length()/126+1;}
+                    int Ind=126;
+                    if(sb.length()%Ind == 0){Long=sb.length()/Ind;
+                    }else{Long=sb.length()/Ind+1;}
                     for(int i=0;i<Long;i++){
+int b=i;
+if(b>255){b=b-255;}
+                        StringBuffer result = new StringBuffer(Integer.toHexString(b));
+                        while (result.length() < 2) {
+                            result.insert(0, "0");
+                        }
+                        String cont=result.toString().toUpperCase();
                         if(i==Long-1){
-                            String data=bytesToHex(sb.substring(i*126, sb.length()).getBytes());
-                            int length=sb.substring(i*126, sb.length()).getBytes().length+2;
-                            System.out.println(Convvvert(data,Integer.toHexString(length)));
+                            String data=bytesToHex(sb.substring(i*Ind, sb.length()).getBytes());
+                            int length=sb.substring(i*Ind, sb.length()).getBytes().length+3;
+                            if(!check(Convvvert(data,Integer.toHexString(length),cont))){
+                                return;
+                            }
                         }else{
-                            String data=bytesToHex(sb.substring(i*126, i*126+126).getBytes());
-                            int length=sb.substring(i*126, i*126+126).getBytes().length+2;
-                            System.out.println(Convvvert(data,Integer.toHexString(length)));
+                            String data=bytesToHex(sb.substring(i*Ind, i*Ind+Ind).getBytes());
+                            int length=sb.substring(i*Ind, i*Ind+Ind).getBytes().length+3;
+                            if(!check(Convvvert(data,Integer.toHexString(length),cont))){
+                                return;
+                            }
                         }
                     }
                     fr.close();
                 }catch(Exception e){e.printStackTrace();}
             }
         }).start();
-
     }
 //設定tireid
-public static void setTireId(final ArrayList<String> Id, final BleServiceControl bleServiceControl) {
+public static void setTireId(final ArrayList<String> Id) {
     ArrayList<String> tmpsend=new ArrayList<>();
     tmpsend.add("60A200FFFFFFFFC20A");
     int i=1;
@@ -107,7 +117,7 @@ public static void setTireId(final ArrayList<String> Id, final BleServiceControl
     }
     public static String getDateTime(){
 
-        SimpleDateFormat sdFormat = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat sdFormat = new SimpleDateFormat("HH:mm:ss:SSS");
 
         Date date = new Date();
 
@@ -118,8 +128,8 @@ public static void setTireId(final ArrayList<String> Id, final BleServiceControl
         return strDate;
 
     }
-    public static String Convvvert(String data,String length){
-        String command="0A02LX00F5";
+    public static String Convvvert(String data,String length,String line){
+        String command="0A02LHX00F5";
         switch(length.length()){
             case 1:
                 length="000"+length;
@@ -134,7 +144,51 @@ public static void setTireId(final ArrayList<String> Id, final BleServiceControl
                 length=length;
                 break;
         }
-        command= addcheckbyte(command.replace("L",length).replace("X", data));
+        if(line.equals("F5")){line="00";}
+        command= addcheckbyte(command.replace("L",length).replace("X", data).replace("H",line));
         return command;
+    }
+    public static boolean check(String data){
+        RXDATA=new byte[0];
+        bleServiceControl.WriteCmd(addcheckbyte(data));
+        try{
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+            Date past=sdf.parse(sdf.format(new Date()));
+            int fal=0;
+            while(fal<5){
+                Date now=sdf.parse(sdf.format(new Date()));
+                double time=getDatePoor(now,past);
+                if(time>0.1){
+                    past=sdf.parse(sdf.format(new Date()));
+                    RXDATA=new byte[0];
+                    bleServiceControl.WriteCmd(addcheckbyte(data));
+                    fal++;
+                }else{
+                    if(RXDATA.length==8){
+                        if(RXDATA[1]==(byte) 0x02&&RXDATA[5]==(byte) 0x00){     RXDATA=new byte[0];
+                            return true;}else{
+                            RXDATA=new byte[0];
+                            bleServiceControl.WriteCmd(addcheckbyte(data));
+                            fal++;
+                        }
+                    }
+                }
+
+            }
+            return false;
+        }catch (Exception e){e.printStackTrace();return false;}
+    }
+    public static void uploaderror(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }).start();
+    }
+    public static double getDatePoor(Date endDate, Date nowDate) {
+        long diff = endDate.getTime() - nowDate.getTime();
+        long sec = diff/1000;
+        return sec;
     }
 }

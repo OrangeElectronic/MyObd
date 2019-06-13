@@ -1,6 +1,8 @@
 package com.example.blelibrary;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -27,6 +29,8 @@ import com.example.blelibrary.blelibrary.tool.FormatConvert;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
+
+import static com.example.blelibrary.Command.RX;
 import static com.example.blelibrary.Command.getDateTime;
 import static com.example.blelibrary.Command.setTireId;
 public class MainActivity extends AppCompatActivity {
@@ -58,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         re=findViewById(R.id.re);
         re.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,true));
         re.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         setui(false);
     }
     public void setui(boolean enable){
@@ -98,6 +103,7 @@ re.scrollToPosition(0);
       try{
           Log.w("WriteReback","Data:"+ FormatConvert.bytesToHex(a.getReback())+","+getDateTime());
           message.add(0,"RX:"+FormatConvert.bytesToHex(a.getReback())+","+getDateTime());
+          Command.RXDATA=a.getReback();
           adapter.notifyDataSetChanged();
           re.scrollToPosition(0);
       }catch (Exception e){Log.w("error",e.getMessage());}
@@ -134,7 +140,7 @@ switch (view.getId()){
         write.add(edit_id2.getText().toString());
         write.add(edit_id3.getText().toString());
         write.add(edit_id4.getText().toString());
-        setTireId(write,bleServiceControl);
+        setTireId(write);
         break;
     case R.id.select_ble:
         scan.scanLeDevice(true);

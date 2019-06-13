@@ -35,14 +35,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onclick"
-            android:text="燒寫驗證" />
+            android:text="燒寫驗證加密" />
 
         <Button
             android:id="@+id/waitmode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onclick"
-            android:text="RF模組進入等待模式" />
+            android:text="燒寫驗證不加密" />
 
         <Button
             android:id="@+id/readsensor"
