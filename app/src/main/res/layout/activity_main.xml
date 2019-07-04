@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".Demo.MainActivity">
 
     <android.widget.Toolbar
         android:id="@+id/toolbar2"
@@ -21,18 +21,22 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:onClick="onClick"
+            android:visibility="visible"
             app:srcCompat="@android:drawable/presence_online"
             tools:layout_editor_absoluteX="16dp"
             tools:layout_editor_absoluteY="20dp" />
+
         <TextView
             android:id="@+id/action_bar_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Orange TPMS"
+            android:text="@string/app_name"
             android:textColor="#FFFFFF"
             android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="149dp"
+            tools:layout_editor_absoluteY="16dp" />
 
         <ImageView
             android:id="@+id/select_ble"

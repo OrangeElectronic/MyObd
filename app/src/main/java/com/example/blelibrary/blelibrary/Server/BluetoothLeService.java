@@ -36,11 +36,16 @@ import com.example.blelibrary.blelibrary.EventBus.ConnectState;
 import com.example.blelibrary.blelibrary.EventBus.ReadData;
 import com.example.blelibrary.blelibrary.EventBus.RebackData;
 import com.example.blelibrary.blelibrary.EventBus.WriteData;
+import com.example.blelibrary.tool.Command;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.UUID;
+
+import static com.example.blelibrary.blelibrary.tool.FormatConvert.StringHexToByte;
+import static com.example.blelibrary.blelibrary.tool.FormatConvert.bytesToHex;
+
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -54,7 +59,8 @@ public class BluetoothLeService extends Service {
     private String mBluetoothDeviceAddress;
     public BluetoothGatt mBluetoothGatt;
     private int mConnectionState = STATE_DISCONNECTED;
-
+    int check=0;
+    byte [] tmp=new byte[0];
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
@@ -111,8 +117,13 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
-            EventBus.getDefault().post(new ReadData(characteristic.getValue()));
+ tmp=arrayAdd(tmp,characteristic.getValue());
+            if(tmp.length==check||check==0){
+                Command.RXDATA=characteristic.getValue();
+            }
+            Log.d("WriteReback",bytesToHex(tmp));
         }
+
 @Override
 public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic characteristic,int status){
     EventBus.getDefault().post(new WriteData(characteristic.getValue()));
@@ -120,7 +131,11 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
-            EventBus.getDefault().post(new RebackData(characteristic.getValue()));
+            tmp=arrayAdd(tmp,characteristic.getValue());
+            if(tmp.length==check||check==0){
+            Command.RXDATA=characteristic.getValue();
+            }
+            Log.d("WriteReback",bytesToHex(tmp));
         }
     };
 
@@ -286,14 +301,17 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
         }
         mBluetoothGatt.readCharacteristic(characteristic);
     }
+    public static byte[] arrayAdd(byte[] array1, byte[] array2) {
 
-    /**
-     * Enables or disables notification on a give characteristic.
-     *
-     * @param characteristic Characteristic to act on.
-     * @param enabled If true, enable notification.  False otherwise.
-     */
+        byte[] array = new byte[array1.length + array2.length];
 
+        System.arraycopy(array1, 0, array, 0, array1.length);
+
+        System.arraycopy(array2, 0, array, array1.length, array.length);
+
+        return array;
+
+    }
     public void setCharacteristicNotification(BluetoothGattCharacteristic characteristic,
                                               boolean enabled) {
 

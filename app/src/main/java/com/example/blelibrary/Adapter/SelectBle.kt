@@ -12,14 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.example.blelibrary.MainActivity
-import com.example.blelibrary.MainActivity.*
+import com.example.blelibrary.MainActivity.MainPeace.Companion.blename
+import com.example.blelibrary.MainActivity.ScanBle
 import com.example.blelibrary.R
-import com.example.blelibrary.blelibrary.Server.BleServiceControl
+import com.example.blelibrary.blelibrary.EventBus.ConnectBle
+import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList
 
 
-class SelectBle(private val a:ArrayList<BluetoothDevice>,private val activity: Activity)
+class SelectBle(private val a:ArrayList<BluetoothDevice>,private val scanner: ScanBle)
     : RecyclerView.Adapter<SelectBle.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,17 +30,14 @@ class SelectBle(private val a:ArrayList<BluetoothDevice>,private val activity: A
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if(a[position].name==null){holder.device.text="未知的裝置"}else{holder.device.text=a[position].name}
+        if(a[position].name==null){holder.device.text="Unknown Device"}else{holder.device.text=a[position].name}
 
         holder.address.text=a[position].address
         holder.mView.setOnClickListener(View.OnClickListener {
-            scan.scanLeDevice(false)
-            bleServiceControl.connect(a[position].address, MainActivity.activity)
-            message.add("Trying to connect  for "+a[position].name)
-            adapter.notifyDataSetChanged()
-            blename=a[position].name
-            MainActivity.re.scrollToPosition(message.size - 1)
-            activity.finish()
+            blename=a[position].address
+            scanner.scan.scanLeDevice(false)
+            scanner.finish()
+                EventBus.getDefault().post(ConnectBle(false))
         })
     }
 

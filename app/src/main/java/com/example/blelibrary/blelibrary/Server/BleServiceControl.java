@@ -1,6 +1,7 @@
 package com.example.blelibrary.blelibrary.Server;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.content.BroadcastReceiver;
@@ -36,7 +37,7 @@ public class BleServiceControl {
     private BluetoothGattCharacteristic mNotifyCharacteristic;
     private String mDeviceAddress;
     public byte[] getData=new byte[10];
-    private  ServiceConnection   mServiceConnection = new ServiceConnection() {
+    public  ServiceConnection   mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
@@ -50,13 +51,23 @@ public class BleServiceControl {
             mBluetoothLeService = null;
         }
     };
+   public boolean first=true;
     public void connect(final String mDeviceAddress, Activity activity){
-        this.mDeviceAddress=mDeviceAddress;
-        if(mBluetoothLeService!=null){ mBluetoothLeService.connect(mDeviceAddress);}
-        if(!EventBus.getDefault().isRegistered(activity)){EventBus.getDefault().register(activity);}
-        activity.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        Intent gattServiceIntent = new Intent(activity, BluetoothLeService.class);
-        activity.bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+        try{
+            if(first){
+                first=false;
+                try{activity.unregisterReceiver(mGattUpdateReceiver);}catch (Exception r){}
+                this.mDeviceAddress=mDeviceAddress;
+                if(mBluetoothLeService!=null){ mBluetoothLeService.connect(mDeviceAddress);}
+                if(!EventBus.getDefault().isRegistered(activity)){EventBus.getDefault().register(activity);}
+                activity.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+                Intent gattServiceIntent = new Intent(activity, BluetoothLeService.class);
+                activity.bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);}else{
+                this.mDeviceAddress=mDeviceAddress;
+                mBluetoothLeService.connect(mDeviceAddress);
+            }
+        }catch (Exception e){e.printStackTrace();}
+
     }
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
@@ -125,26 +136,14 @@ Log.w("s","連線");
             }
         }
     }
-  public void WriteArray(final ArrayList<String> a){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for(final String q:a){
-                    WriteCmd(q);
-                        try {
-                            Thread.currentThread().sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }).start();
-  }
-    public boolean WriteCmd(String write){
+
+    public boolean WriteCmd(String write,int check){
 
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
 //    Log.w("char",""+a.getUuid());
     if(TXUUID.equals(a.getUuid())){
+        mBluetoothLeService.check=check;
+        mBluetoothLeService.tmp=new byte[0];
         mNotifyCharacteristic=a;
         mNotifyCharacteristic.setValue(StringHexToByte(write));
         mBluetoothLeService.writeCharacteristic(mNotifyCharacteristic);
@@ -164,4 +163,20 @@ return false;
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;
     }
+    public static boolean isServiceRunning(Context context, String ServiceName) {
+        if (("").equals(ServiceName) || ServiceName == null)
+            return false;
+        ActivityManager myManager = (ActivityManager) context
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(30);
+        for (int i = 0; i < runningService.size(); i++) {
+            if (runningService.get(i).service.getClassName().toString()
+                    .equals(ServiceName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

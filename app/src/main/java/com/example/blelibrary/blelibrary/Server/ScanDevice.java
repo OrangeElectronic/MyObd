@@ -69,7 +69,7 @@ public class ScanDevice {
     public void RequestPermission(){
          mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if(!isLocServiceEnable(activity)){
-            Toast.makeText(activity,"請打開定位功能",Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity,"Please enable GPS",Toast.LENGTH_SHORT).show();
         }
         boolean originalBluetooth = (mBluetoothAdapter != null && mBluetoothAdapter.isEnabled());
         if (originalBluetooth) {

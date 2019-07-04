@@ -6,32 +6,31 @@
     android:layout_height="match_parent"
     android:layout_margin="0dp"
     android:background="#EFE8E1"
-    tools:context=".Activity.SelectMmy">
+    tools:context=".Demo.Activity.SelectMmy">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/mmy_toolbar"
+    <RelativeLayout
+        android:id="@+id/relative"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary">
+        android:layout_height="56dp"
+        android:background="@color/buttoncolor">
 
         <TextView
-            android:id="@+id/action_bar_title"
+            android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="選擇車種"
-            android:textColor="#FFFFFF"
-            android:textSize="18dp"
-            android:textStyle="bold" />
-
-    </android.support.v7.widget.Toolbar>
+            android:layout_centerInParent="true"
+            android:text="Vehicle Selection"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/re"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/relative"
         android:layout_marginStart="22dp"
-        android:layout_marginTop="77dp"
+        android:layout_marginTop="26dp"
         android:layout_marginEnd="22dp"
         android:layout_marginBottom="0dp">
 

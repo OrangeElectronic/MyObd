@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SelectAction">
+    tools:context=".Demo.SelectAction">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,6 +15,14 @@
         android:layout_marginBottom="50dp"
         android:background="@android:color/background_light"
         android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:text="262" />
 
         <Button
             android:id="@+id/handshake"
@@ -35,21 +43,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onclick"
-            android:text="燒寫驗證加密" />
+            android:text="3行" />
 
         <Button
             android:id="@+id/waitmode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onclick"
-            android:text="燒寫驗證不加密" />
+            android:text="一行" />
+        <Button
+            android:id="@+id/oneflash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="onclick"
+            android:text="一次送" />
 
         <Button
             android:id="@+id/readsensor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onclick"
-            android:text="讀取傳感器" />
+            android:text="3行" />
 
         <Button
             android:id="@+id/gettoken"
