@@ -35,12 +35,12 @@ public  class Command {
     //握手
     public static void HandShake(){
         String a="0A0000030000F5";
-        bleServiceControl.WriteCmd(addcheckbyte(a));
+        bleServiceControl.WriteCmd(addcheckbyte(a),7);
     }
     //Reboot
     public static void Reboot(){
         String a="0A0D00030000F5";
-        bleServiceControl.WriteCmd(addcheckbyte(a));
+        bleServiceControl.WriteCmd(addcheckbyte(a),7);
     }
    private static Handler handler=new Handler() ;
 // 燒寫&amp;驗證Flash
@@ -103,7 +103,7 @@ public static void setTireId(final ArrayList<String> Id) {
         i++;
     }
     tmpsend.add("60A2FFFFFFFFFF3D0A");
-    bleServiceControl.WriteArray(tmpsend);
+    bleServiceControl.WriteArray(tmpsend,9);
 }
     public static String AddEmpty(String a){
         switch (a.length()){
@@ -159,7 +159,7 @@ public static void setTireId(final ArrayList<String> Id) {
     }
     public  static boolean check(String data){
         RXDATA=new byte[0];
-        bleServiceControl.WriteCmd(addcheckbyte(data));
+        bleServiceControl.WriteCmd(addcheckbyte(data),8);
         try{
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
             Date past=sdf.parse(sdf.format(new Date()));
@@ -167,17 +167,17 @@ public static void setTireId(final ArrayList<String> Id) {
             while(fal<5){
                 Date now=sdf.parse(sdf.format(new Date()));
                 double time=getDatePoor(now,past);
-                if(time>2){
+                if(time>0.5){
                     past=sdf.parse(sdf.format(new Date()));
                     RXDATA=new byte[0];
-                    bleServiceControl.WriteCmd(addcheckbyte(data));
+                    bleServiceControl.WriteCmd(addcheckbyte(data),8);
                     fal++;
                 }else{
                     if(RXDATA.length==8){
                         if(RXDATA[1]==(byte) 0x02&&RXDATA[5]==(byte) 0x00){     RXDATA=new byte[0];
                             return true;}else{
                             RXDATA=new byte[0];
-                            bleServiceControl.WriteCmd(addcheckbyte(data));
+                            bleServiceControl.WriteCmd(addcheckbyte(data),8);
                             fal++;
                         }
                     }

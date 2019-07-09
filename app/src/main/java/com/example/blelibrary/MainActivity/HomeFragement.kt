@@ -34,13 +34,15 @@ class HomeFragement : Fragment() {
       rootView= inflater.inflate(R.layout.fragment_home_fragement, container, false)
         act=activity!! as MainPeace
         rootView.selectmmy.setOnClickListener {
-            if(act.bleServiceControl.isconnect){
+//            if(act.bleServiceControl.isconnect){
                 val transaction = fragmentManager!!.beginTransaction()
                 transaction.replace(R.id.frage, MakeFragement())
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                         .addToBackStack(null)
                         .commit()
-            }else{        act.startActivity(Intent(act,ScanBle::class.java))}
+//            }else{
+//                act.startActivity(Intent(act,ScanBle::class.java))
+//            }
 
         }
         return rootView

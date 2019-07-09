@@ -25,7 +25,7 @@
         <activity
             android:name=".Demo.ScanBle"
             android:theme="@style/SwipTheme" />
-        <activity android:name=".MainActivity.MainPeace">
+        <activity android:name=".Demo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

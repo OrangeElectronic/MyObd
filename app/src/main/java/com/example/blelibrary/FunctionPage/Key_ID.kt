@@ -80,23 +80,27 @@ class Key_ID : Fragment() {
             write.add(rootView.Rrt.getText().toString())
             act.loading()
             Thread{
-                var iscuss=false
-                if(!act.command.HandShake()){
-                    act.command.Reboot()
-                }
-                if(act.command.HandShake()){
-                    if( act.command.WriteFlash(act,"s19/$directfit.s19",126)){
-                        if( act.command.setTireId(write)){
-                            iscuss=true
-                        }
-                    }
-                }
+                Thread.sleep(10000)
                 handler.post {
                     act.LoadingSuccess()
-                    if(iscuss){     updateui(SUCCESS)}else{
-                        updateui(FAIL)
-                    }
-                }
+                    updateui(SUCCESS)}
+//                var iscuss=false
+//                if(!act.command.HandShake()){
+//                    act.command.Reboot()
+//                }
+//                if(act.command.HandShake()){
+//                    if( act.command.WriteFlash(act,"s19/$directfit.s19",126)){
+//                        if( act.command.setTireId(write)){
+//                            iscuss=true
+//                        }
+//                    }
+//                }
+//                handler.post {
+//                    act.LoadingSuccess()
+//                    if(iscuss){     updateui(SUCCESS)}else{
+//                        updateui(FAIL)
+//                    }
+//                }
             }.start()
         }
         updateui(WAIT)

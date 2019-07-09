@@ -36,11 +36,15 @@ import com.example.blelibrary.Demo.blelibrary.EventBus.ConnectState;
 import com.example.blelibrary.Demo.blelibrary.EventBus.ReadData;
 import com.example.blelibrary.Demo.blelibrary.EventBus.RebackData;
 import com.example.blelibrary.Demo.blelibrary.EventBus.WriteData;
+import com.example.blelibrary.tool.Command;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 import java.util.UUID;
+
+import static com.example.blelibrary.blelibrary.Server.BluetoothLeService.arrayAdd;
+import static com.example.blelibrary.blelibrary.tool.FormatConvert.bytesToHex;
 
 /**
  * Service for managing connection and data communication with a GATT server hosted on a
@@ -49,6 +53,8 @@ import java.util.UUID;
 public class BluetoothLeService extends Service {
     private final static String TAG = BluetoothLeService.class.getSimpleName();
     boolean writesuccess=true;
+    int check=0;
+    byte [] tmp=new byte[0];
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceAddress;
@@ -111,6 +117,7 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
+
             EventBus.getDefault().post(new ReadData(characteristic.getValue()));
         }
 @Override
@@ -120,7 +127,11 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
-            EventBus.getDefault().post(new RebackData(characteristic.getValue()));
+            tmp=arrayAdd(tmp,characteristic.getValue());
+            if(tmp.length==check||check==0){
+                EventBus.getDefault().post(new RebackData(tmp));
+            }
+            Log.d("WriteReback",bytesToHex(tmp));
         }
     };
 

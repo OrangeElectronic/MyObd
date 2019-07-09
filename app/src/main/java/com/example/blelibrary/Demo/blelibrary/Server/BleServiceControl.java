@@ -125,12 +125,12 @@ Log.w("s","連線");
             }
         }
     }
-  public void WriteArray(final ArrayList<String> a){
+  public void WriteArray(final ArrayList<String> a, final int check){
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     for(final String q:a){
-                    WriteCmd(q);
+                    WriteCmd(q,check);
                         try {
                             Thread.currentThread().sleep(100);
                         } catch (InterruptedException e) {
@@ -140,12 +140,13 @@ Log.w("s","連線");
                 }
             }).start();
   }
-    public boolean WriteCmd(String write){
-
+    public boolean WriteCmd(String write,int check){
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
 //    Log.w("char",""+a.getUuid());
     if(TXUUID.equals(a.getUuid())){
         mNotifyCharacteristic=a;
+        mBluetoothLeService.tmp=new byte[0];
+        mBluetoothLeService.check=check;
         mNotifyCharacteristic.setValue(StringHexToByte(write));
         mBluetoothLeService.writeCharacteristic(mNotifyCharacteristic);
         return true;
