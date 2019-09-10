@@ -6,26 +6,37 @@
     android:layout_height="match_parent"
     tools:context=".FunctionPage.Key_ID">
 
-    <LinearLayout
-        android:id="@+id/Twice"
+    <EditText
+        android:id="@+id/lrt3"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="55dp"
+        android:background="@mipmap/icon_input_box_locked"
+        android:gravity="right|center_vertical"
+        android:hint="Original sensor ID"
+        android:paddingRight="20dp"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/program"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
-
-        <Button
-            android:id="@+id/program"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginRight="0.5dp"
-            android:layout_weight="1"
-            android:background="@color/buttoncolor"
-            android:text="Start"
-            android:textColor="@color/white"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-    </LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="0.5dp"
+        android:layout_weight="1"
+        android:background="@color/buttoncolor"
+        android:text="Start"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/mmy_text"
@@ -56,8 +67,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/Twice"
-        android:layout_below="@id/condition">
+        android:layout_above="@id/program"
+        android:layout_below="@id/condition"
+        android:layout_marginBottom="55dp">
 
         <TextView
             android:id="@+id/Lf"
@@ -117,6 +129,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/imageView4"
             android:layout_marginBottom="10dp"
+            android:elevation="1dp"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -184,6 +197,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/imageView4"
             android:layout_marginTop="10dp"
+            android:elevation="1dp"
             android:orientation="horizontal">
 
             <RelativeLayout

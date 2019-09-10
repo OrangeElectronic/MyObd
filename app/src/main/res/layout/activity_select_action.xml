@@ -67,14 +67,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onclick"
-            android:text="一次送" />
+            android:text="RR" />
 
         <Button
             android:id="@+id/readsensor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="onclick"
-            android:text="3行" />
+            android:text="5輪" />
 
         <Button
             android:id="@+id/gettoken"

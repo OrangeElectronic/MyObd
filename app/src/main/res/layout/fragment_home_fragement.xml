@@ -69,6 +69,7 @@
                     android:layout_alignParentEnd="false"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="25dp"
+                    android:alpha="0.7"
                     android:src="@mipmap/favourite_n" />
 
                 <TextView
@@ -105,6 +106,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerInParent="true"
                     android:layout_marginEnd="25dp"
+                    android:alpha="0.7"
                     android:src="@mipmap/setting" />
 
                 <TextView
@@ -133,6 +135,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
                     android:layout_marginLeft="25dp"
+                    android:alpha="0.7"
                     android:src="@mipmap/manual" />
 
                 <TextView
