@@ -3,6 +3,10 @@ package com.example.obd.tool;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +16,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 public class FtpManager {
+    public static String ip="35.240.51.141";
+    public static String username="orangerd";
+    public static String password="orangetpms(~2";
     public static boolean DownMMy( Activity activity) {
         try {
             File DB_PATH = activity.getDatabasePath("mmytb.db");
@@ -66,20 +73,21 @@ public class FtpManager {
 
     public static String GetS19Name(String name){
         try{
-            URL url=new URL("ftp://orangerd:orangetpms@61.221.15.194:21/OrangeTool/Database/SensorCode/OBD/"+name+"/");
-            BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-            String inputLine;
-            while ((inputLine = br.readLine()) != null) {
-                String[] spi = inputLine.split(" ");
-                return spi[spi.length - 1];
-            }
+            FTPClient ftpClient = new FTPClient();
+            ftpClient.connect(ip,21);
+            ftpClient.login(username, password);
+            FTPFile[] files=ftpClient.listFiles("Drive/OBD DONGLE/"+name);
+            if(files.length>0){
+                Log.d("filename",files[0].getName());
+                return files[0].getName(); }
             return "nodata";
         }catch (Exception e){e.printStackTrace(); return "nodata";}
     }
 
     public static boolean donloads19(String name,Activity activity){
         try{
-            URL url=new URL("ftp://orangerd:orangetpms@61.221.15.194:21/OrangeTool/Database/SensorCode/OBD/"+name+"/"+GetS19Name(name));
+            name="DR001";
+            URL url=new URL("ftp://"+username+":"+password+"@"+ip+":21/Drive/OBD DONGLE/"+name+"/"+GetS19Name(name));
             InputStream is=url.openStream();
             FileOutputStream fos=new FileOutputStream(activity.getApplicationContext().getFilesDir().getPath()+"/"+name+".srec");
             int bufferSize = 8192;

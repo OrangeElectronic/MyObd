@@ -19,7 +19,7 @@ public  class Command {
     public static String Program_Flash_Fail="F502000302F60A";
     public static String VERIFY_FAIL="F502000303F70A";
     public BleServiceControl bleServiceControl;
-    //自動設定checkbyte
+    //自動設定checkbyteF5020005000000F20A
     public  String addcheckbyte(String com){
         byte a[]=StringHexToByte(com);
         byte checkbyte= a[0];
