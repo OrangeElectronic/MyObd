@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity.MainPeace">
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,6 +38,7 @@
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
+            android:onClick="onclick"
             app:srcCompat="@drawable/out" />
     </RelativeLayout>
 
@@ -45,7 +46,8 @@
         android:id="@+id/frage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="60dp"
+        android:background="@mipmap/img_default">
 
     </FrameLayout>
 

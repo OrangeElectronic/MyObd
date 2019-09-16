@@ -26,6 +26,10 @@
         <activity
             android:name="com.example.obd.Demo.ScanBle"
             android:theme="@style/SwipTheme" />
+        <activity
+            android:name="com.example.obd.MainActivity.Logout"
+            android:theme="@style/SwipTheme">
+        </activity>
         <activity android:name="com.example.obd.MainActivity.MainPeace">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
