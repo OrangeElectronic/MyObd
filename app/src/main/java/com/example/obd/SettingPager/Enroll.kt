@@ -94,7 +94,7 @@ rootview.cancel.setOnClickListener {
             if(isrunn){
                 return@setOnClickListener
             }
-            act.loading()
+            act.LoadBleUI("Data Loading")
             var email=email.text.toString()
             var password=password.text.toString()
             var repeatpassword=repeatpassword.text.toString()
@@ -120,7 +120,7 @@ rootview.cancel.setOnClickListener {
                     a=Fuction.Register(email,password,serialnumber,"Retailer",company,firstname,lastname,phone,state,city,streat,zpcode)
                 }
                 handler.post {
-                    act.LoadingSuccess()
+                    act.LoadingSuccessUI()
                     if(a==-1){
                         Toast.makeText(act,resources.getString(R.string.error),Toast.LENGTH_SHORT).show()
                     }else if(a==1){

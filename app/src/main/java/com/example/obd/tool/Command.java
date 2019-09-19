@@ -3,7 +3,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.obd.blelibrary.Server.BleServiceControl;
+import com.example.obd.blelibrary.BleActivity;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -14,11 +14,10 @@ import java.util.Date;
 import static com.example.obd.Demo.blelibrary.tool.FormatConvert.StringHexToByte;
 
 public  class Command {
-    public  static String RXDATA="";
     public static String WRITE_SUCCESS="F502000300F40A";
     public static String Program_Flash_Fail="F502000302F60A";
     public static String VERIFY_FAIL="F502000303F70A";
-    public BleServiceControl bleServiceControl;
+    public BleActivity act;
     //自動設定checkbyteF5020005000000F20A
     public  String addcheckbyte(String com){
         byte a[]=StringHexToByte(com);
@@ -35,30 +34,31 @@ public  class Command {
             String a="0A0000030000F5";
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
             Date past=sdf.parse(sdf.format(new Date()));
-            bleServiceControl.WriteCmd(addcheckbyte(a),7);
+            act.getBleServiceControl().WriteCmd(addcheckbyte(a),14);
             while(true){
                 Date now=sdf.parse(sdf.format(new Date()));
                 double time=getDatePoor(now,past);
                 if(time>3){return false;}
-                if(RXDATA.length()==14){return true;}
+                if(act.getRXDATA().length()==14){return true;}
             }
-        }catch (Exception e){e.printStackTrace();return false;}
+        }catch (Exception e){ Log.d("CommandError",e.getMessage());
+        return false;}
 
     }
     //Reboot
     public  boolean Reboot(){
         try{
             String a="0A0D00030000F5";
-            bleServiceControl.WriteCmd(addcheckbyte(a),7);
+            act.getBleServiceControl().WriteCmd(addcheckbyte(a),14);
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
             Date past=sdf.parse(sdf.format(new Date()));
             while(true){
                 Date now=sdf.parse(sdf.format(new Date()));
                 double time=getDatePoor(now,past);
                 if(time>3){return false;}
-                if(RXDATA.equals("F501000300F70A")){return true;}
+                if(act.getRXDATA().equals("F501000300F70A")){return true;}
             }
-        }catch (Exception e){e.printStackTrace();return false;}
+        }catch (Exception e){ Log.d("CommandError",e.getMessage());return false;}
     }
    private static Handler handler=new Handler() ;
 // 燒寫&amp;驗證Flash
@@ -89,7 +89,7 @@ if(b>=255){b=b-255;}
                             Log.d("write","以跑完"+i);
                             String data=bytesToHex(sb.substring(i*Ind, sb.length()).getBytes());
                             int length=sb.substring(i*Ind, sb.length()).getBytes().length+3;
-                            bleServiceControl.WriteCmd(Convvvert(data,Integer.toHexString(length),cont),8);
+                            act.getBleServiceControl().WriteCmd(Convvvert(data,Integer.toHexString(length),cont),16);
                             return true;
                         }else{
                             String data=bytesToHex(sb.substring(i*Ind, i*Ind+Ind).getBytes());
@@ -102,7 +102,7 @@ if(b>=255){b=b-255;}
                     }
                     fr.close();
                     return true;
-                }catch(Exception e){e.printStackTrace();return false;}
+                }catch(Exception e){ Log.d("CommandError",e.getMessage());return false;}
     }
 //設定tireid
 public  boolean setTireId(final ArrayList<String> Id) {
@@ -119,9 +119,9 @@ public  boolean setTireId(final ArrayList<String> Id) {
     tmpsend.add("60A2FFFFFFFFFF3D0A");
     for(String a:tmpsend){
         try{
-            bleServiceControl.WriteCmd(a,9);
+            act.getBleServiceControl().WriteCmd(a,18);
             Thread.currentThread().sleep(50);
-        }catch (Exception e){e.printStackTrace();}
+        }catch (Exception e){ Log.d("CommandError",e.getMessage());}
     }
     try{
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
@@ -132,7 +132,7 @@ while (true){
     if(time>10){
         return false;
     }
-    if(RXDATA.equals("60B201FFFFFFFFD30A")){
+    if(act.getRXDATA().equals("60B201FFFFFFFFD30A")){
         return true;
     }
 }
@@ -191,7 +191,7 @@ while (true){
         return command;
     }
     public  boolean check(String data){
-        bleServiceControl.WriteCmd(addcheckbyte(data),8);
+        act.getBleServiceControl().WriteCmd(addcheckbyte(data),16);
         try{
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
             Date past=sdf.parse(sdf.format(new Date()));
@@ -201,15 +201,15 @@ while (true){
                 double time=getDatePoor(now,past);
                 if(time>0.3){
                     past=sdf.parse(sdf.format(new Date()));
-                    bleServiceControl.WriteCmd(addcheckbyte(data),8);
+                    act.getBleServiceControl().WriteCmd(addcheckbyte(data),16);
                     fal++;
                 }
-                if(RXDATA.length()>0){
+                if(act.getRXDATA().length()>0){
                     return true;
                 }
             }
             return false;
-        }catch (Exception e){e.printStackTrace();return false;}
+        }catch (Exception e){ Log.d("CommandError",e.getMessage());return false;}
     }
     public static void uploaderror(){
         new Thread(new Runnable() {
@@ -247,7 +247,7 @@ while (true){
                                 return;
                             }
                     fr.close();
-                }catch(Exception e){e.printStackTrace();}
+                }catch(Exception e){ Log.d("CommandError",e.getMessage());}
             }
         }).start();
     }

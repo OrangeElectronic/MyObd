@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">USB Tx</string>
+    <string name="app_name">OBD II DONGLE</string>
     <string name="Setting">設定</string>
     <string name="Area">地區</string>
     <string name="to_give">應用程式可能會根據您的所在地區為您提供當地內容</string>

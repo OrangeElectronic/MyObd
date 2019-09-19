@@ -47,13 +47,13 @@ class ResetPass : Fragment() {
             if(run){
                 return@setOnClickListener
             }
-            act.loading()
+            act.LoadBleUI("Data Loading")
             var email=edit.text.toString()
             Thread{
                 var isok= ResetPassword(email)
                 handler.post {
                     run=false
-                    act.LoadingSuccess()
+                    act.LoadingSuccessUI()
                     if(isok){
                         val transaction = fragmentManager!!.beginTransaction()
                         transaction.replace(R.id.frage, Sign_in())

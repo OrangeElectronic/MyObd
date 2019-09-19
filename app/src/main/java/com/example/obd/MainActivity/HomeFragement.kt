@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.obd.blelibrary.ScanBle
 
 import com.orange.obd.R
 import com.orango.electronic.orangetxusb.SettingPagr.Setting
@@ -34,6 +35,13 @@ class HomeFragement : Fragment() {
                               savedInstanceState: Bundle?): View? {
       rootView= inflater.inflate(R.layout.fragment_home_fragement, container, false)
         act=activity!! as MainPeace
+        rootView.imageView4.setOnClickListener {
+            val transaction = fragmentManager!!.beginTransaction()
+            transaction.replace(R.id.frage, MyFavorite())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                    .addToBackStack(null)
+                    .commit()
+        }
         rootView.imageView5.setOnClickListener {
             val transaction = fragmentManager!!.beginTransaction()
             transaction.replace(R.id.frage, Setting())
@@ -47,17 +55,8 @@ class HomeFragement : Fragment() {
 //                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
 //                        .addToBackStack(null)
 //                        .commit()
-            if(act.bleServiceControl.isconnect){
-                val transaction = fragmentManager!!.beginTransaction()
-                transaction.replace(R.id.frage, Selection())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-                        .addToBackStack(null)
-                        .commit()
-            }else{
-                act.startActivity(Intent(act,ScanBle::class.java))
-            }
-
-            act.back.visibility=View.VISIBLE
+          act.GoScanner(Selection(),10)
+          act.back.visibility=View.VISIBLE
         }
         act.back.visibility=View.GONE
         return rootView

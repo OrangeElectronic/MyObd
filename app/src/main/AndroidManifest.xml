@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:name="com.example.obd.Demo.Myapp"
+        android:name="com.example.obd.Myapp"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
@@ -27,7 +27,9 @@
         android:supportsRtl="true"
         android:theme="@style/MainAppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.example.obd.FunctionPage.ReProgram"></activity>
+        <activity android:name="com.example.obd.blelibrary.BleActivity"></activity>
+        <activity android:name="com.example.obd.FunctionPage.ReProgram"
+            android:theme="@style/SwipTheme"/>
         <activity android:name="com.example.obd.MainActivity.LogoActvivty">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,9 +48,9 @@
             android:theme="@style/SwipTheme" />
         <activity
             android:name="com.example.obd.MainActivity.MainPeace"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
-            android:name="com.example.obd.MainActivity.ScanBle"
+            android:name="com.example.obd.blelibrary.ScanBle"
             android:theme="@style/SwipTheme" />
 
         <service

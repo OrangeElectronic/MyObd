@@ -1,4 +1,4 @@
-package com.example.obd.Adapter
+package com.example.obd.blelibrary.Adapter
 
 
 import android.bluetooth.BluetoothDevice
@@ -10,15 +10,15 @@ import android.view.View
 
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.obd.MainActivity.MainPeace.Companion.blename
-import com.example.obd.MainActivity.ScanBle
-import com.orange.obd.R
+import com.example.obd.blelibrary.ScanBle
+import com.example.obd.blelibrary.BleActivity
 import com.example.obd.blelibrary.EventBus.ConnectBle
+import com.orange.obd.R
 import org.greenrobot.eventbus.EventBus
 import java.util.ArrayList
 
 
-class SelectBle(private val a:ArrayList<BluetoothDevice>,private val scanner: ScanBle)
+class SelectBle(private val a:ArrayList<BluetoothDevice>, private val scanner: ScanBle)
     : RecyclerView.Adapter<SelectBle.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,10 +32,9 @@ class SelectBle(private val a:ArrayList<BluetoothDevice>,private val scanner: Sc
 
         holder.address.text=a[position].address
         holder.mView.setOnClickListener(View.OnClickListener {
-            blename=a[position].address
+            EventBus.getDefault().post(ConnectBle(a[position].address))
             scanner.scan.scanLeDevice(false)
             scanner.finish()
-                EventBus.getDefault().post(ConnectBle(false))
         })
     }
 

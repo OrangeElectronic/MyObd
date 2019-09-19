@@ -1,4 +1,4 @@
-package com.example.obd.MainActivity;
+package com.example.obd.blelibrary;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 
-import com.example.obd.Adapter.SelectBle;
+import com.example.obd.blelibrary.Adapter.SelectBle;
 import com.orange.obd.R;
 import com.example.obd.blelibrary.EventBus.SerchDevice;
 import com.example.obd.blelibrary.Server.ScanDevice;

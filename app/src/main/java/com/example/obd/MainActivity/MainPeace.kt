@@ -20,6 +20,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import com.airbnb.lottie.LottieAnimationView
+import com.example.obd.Myapp
+import com.example.obd.blelibrary.BleActivity
 import com.orange.obd.R
 import com.example.obd.blelibrary.EventBus.*
 import com.example.obd.blelibrary.Server.BleServiceControl
@@ -36,56 +38,37 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import kotlin.concurrent.schedule
 
-class MainPeace : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
-
+open class MainPeace : BleActivity() {
     val itemDAO: ItemDAO by lazy { ItemDAO(applicationContext) }
     override fun onBackStackChanged() {
 
     }
-    companion object {
-        var blename:String=""
-    }
-
     var iBinder:IBinder?=null
     var command= Command()
     var SelectMake=""
     var SelectModel=""
     var SelectYear=""
     lateinit var feage:FrameLayout
-    lateinit var timer: Timer
     lateinit var textView: TextView
     lateinit var back: ImageView
 lateinit var load:RelativeLayout
     private var savedState: Bundle? = null
-    var bleServiceControl = BleServiceControl()
     lateinit var anim: LottieAnimationView
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_peace)
+        (application as Myapp).act=this
+        init()
         back=findViewById(R.id.imageView13)
         feage=findViewById(R.id.frage)
-        EventBus.getDefault().register(this)
         load=findViewById(R.id.load)
         textView=findViewById(R.id.textView11)
         anim=findViewById(R.id.animation_view)
-        supportFragmentManager.addOnBackStackChangedListener(this)
         savedState = savedInstanceState
         if(savedState != null) onBackStackChanged()
-        timer=Timer()
-        timer.schedule(0,3000){
-runOnUiThread {
-if(!bleServiceControl.isconnect&&!blename.equals("")){
-bleServiceControl.connect(blename,this@MainPeace)
-    Log.d("情況","連線中")
-}
-    if(bleServiceControl.isconnect){
-        Log.d("情況","connect$blename")
-        command.bleServiceControl=bleServiceControl
-    }else{     Log.d("情況","tryconnect$blename")}
-}
-        }
-        loading()
+        command.act=this
+        LoadBleUI("Data Loading")
         DonloadMMy()
         val profilePreferences = getSharedPreferences("Setting", Context.MODE_PRIVATE)
         val handler = Handler()
@@ -110,111 +93,31 @@ fun DonloadMMy(){
         var a=FtpManager.DownMMy(this)
         if(a){
             handler.post {
-                LoadingSuccess()
+                LoadingSuccessUI()
             }
         }else{
             DonloadMMy()
         }
     }.start()
 }
-    public override fun onDestroy() {
-        timer.cancel()
-        if(!bleServiceControl.first){
-            unbindService(bleServiceControl.mServiceConnection)
+    override fun ConnectSituation(boolean: Boolean){
+        if (boolean) {
+            Log.d("連線","連線ok")
+        } else {
+            Log.d("連線","Bluetooth is disconnected")
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frage, HomeFragement())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                    .commit()
         }
-        super.onDestroy()
     }
-    fun loadingble(){
-        textView.text="Connecting"
+    override fun LoadBleUI(a:String){   textView.text=a
         load.visibility= View.VISIBLE
-        anim.visibility=View.VISIBLE
-    }
-    fun loading(){
-        textView.text="Data Loading"
-load.visibility= View.VISIBLE
-        anim.visibility=View.VISIBLE
-    }
-    fun LoadingSuccess(){
+        anim.visibility=View.VISIBLE}
+    override fun LoadingSuccessUI(){
         load.visibility= View.GONE
         anim.visibility=View.GONE
     }
-    //----------------------------------------Use bleServiceControl.WriteCmd(HexString,uuid).to write Data ----------------------------------------
-    @Subscribe
-    fun Event(a: RebackData) {
-        try {
-            Log.w("WriteReback", "Data:" + FormatConvert.bytesToHex(a.getReback()))
-        } catch (e: Exception) {
-            Log.w("error", e.message)
-        }
-
-    }
-
-    //----------------------------------------Use bleServiceControl.ReadCmd(uuid).to read Data----------------------------------------
-    @Subscribe
-    fun Event(a: ReadData) {
-        try {
-            Log.w("ReadReback", "Data:" + FormatConvert.bytesToHex(a.getReback()))
-        } catch (e: Exception) {
-            Log.w("error", e.message)
-        }
-
-    }
-
-    //----------------------------------------Use bleServiceControl.WriteCmd will callbcak this method to confirm is writed susscessfully----------------------------------------
-    @Subscribe
-    fun Event(a: WriteData) {
-        try {
-            Log.w("Write", "Data:" + FormatConvert.bytesToHex(a.data()))
-        } catch (e: Exception) {
-            Log.w("error", e.message)
-        }
-
-    }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun Event(a: ConnectState) {
-        if (a.getReback()) {
-            Log.d("連線","連線ok")
-        } else {
-            handler.post {
-                Log.d("連線","Bluetooth is disconnected")
-                LoadingSuccess()
-                fal=10
-                blename=""
-                supportFragmentManager.addOnBackStackChangedListener(this)
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.add(R.id.frage, HomeFragement(), "Home")
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-                        // 提交事務
-                        .commit()
-            }
-
-        }
-    }
-    var fal=0
-    private var handler= Handler()
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun Event(a: ConnectBle) {
-        loadingble()
-        Thread{
-            fal=0
-            while(true){
-                if(bleServiceControl.isconnect||fal==10){break}
-                Thread.sleep(1000)
-                fal++
-            }
-            handler.post {LoadingSuccess()
-            if(bleServiceControl.isconnect){
-                val transaction = supportFragmentManager!!.beginTransaction()
-                transaction.replace(R.id.frage, Selection())
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-                        .addToBackStack(null)
-                        .commit()
-            }
-            }
-        }.start()
-    }
-
-
     fun onclick(view: View){
         when(view.id){
             R.id.imageView3->{     var intent=Intent(this,Logout::class.java)
@@ -222,18 +125,5 @@ load.visibility= View.VISIBLE
             R.id.imageView13->{
                 goback()
             }
-        }
-
-    }
-    fun  goback(){
-        Thread(){
-            try{
-                var inst = Instrumentation();
-                inst.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK);
-            }
-            catch ( e:java.lang.Exception) {
-                Log.e("Exception when onBack", e.toString());
-            }
-        }.start();
-    }
+        } }
 }

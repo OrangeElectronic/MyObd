@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">USB Tx</string>
+    <string name="app_name">OBD II DONGLE</string>
     <string name="Setting">Setup</string>
     <string name="Area">Bereich</string>
     <string name="to_give">The application might use your area to give you local content</string>

@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 
+import com.example.obd.blelibrary.BleActivity;
 import com.example.obd.tool.Command;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,10 +41,12 @@ public class BleServiceControl {
     private BluetoothGattCharacteristic mNotifyCharacteristic;
     private String mDeviceAddress;
     public byte[] getData=new byte[10];
+    public BleActivity act;
     public  ServiceConnection   mServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder service) {
             mBluetoothLeService = ((BluetoothLeService.LocalBinder) service).getService();
+            mBluetoothLeService.act=act;
             if (!mBluetoothLeService.initialize()) {
                 Log.e(TAG, "Unable to initialize Bluetooth");
             }
@@ -55,22 +58,21 @@ public class BleServiceControl {
         }
     };
    public boolean first=true;
-    public void connect(final String mDeviceAddress, Activity activity){
+    public void connect(final String mDeviceAddress){
         try{
             if(first){
                 first=false;
-                try{activity.unregisterReceiver(mGattUpdateReceiver);}catch (Exception r){}
+                try{act.unregisterReceiver(mGattUpdateReceiver);}catch (Exception r){}
                 this.mDeviceAddress=mDeviceAddress;
                 if(mBluetoothLeService!=null){ mBluetoothLeService.connect(mDeviceAddress);}
-                if(!EventBus.getDefault().isRegistered(activity)){EventBus.getDefault().register(activity);}
-                activity.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-                Intent gattServiceIntent = new Intent(activity, BluetoothLeService.class);
-                activity.bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);}else{
+                if(!EventBus.getDefault().isRegistered(act)){EventBus.getDefault().register(act);}
+                act.registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+                Intent gattServiceIntent = new Intent(act, BluetoothLeService.class);
+                act.bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE);}else{
                 this.mDeviceAddress=mDeviceAddress;
                 mBluetoothLeService.connect(mDeviceAddress);
             }
         }catch (Exception e){e.printStackTrace();}
-
     }
     private void displayGattServices(List<BluetoothGattService> gattServices) {
         if (gattServices == null) return;
@@ -121,7 +123,6 @@ Log.w("s","連線");
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 Log.w("s","斷線");
                 isconnect=false;
-                mBluetoothLeService.connect(mDeviceAddress);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 Log.w("s","發現服務");
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
@@ -141,11 +142,10 @@ Log.w("s","連線");
     }
 
     public boolean WriteCmd(String write,int check){
-        Command.RXDATA="";
+        act.setRXDATA("");
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
-//    Log.w("char",""+a.getUuid());
     if(TXUUID.equals(a.getUuid())){
-        mBluetoothLeService.check=check*2;
+        mBluetoothLeService.check=check;
         mBluetoothLeService.tmp="";
         mNotifyCharacteristic=a;
         mNotifyCharacteristic.setValue(StringHexToByte(write));

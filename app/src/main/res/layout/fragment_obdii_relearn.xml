@@ -4,58 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroung"
     tools:context=".FunctionPage.OBDII_relearn">
 
     <!-- TODO: Update blank fragment layout -->
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/tire"
-        android:translationX="80dp"
-        android:translationY="-110dp" />
 
-    <ImageView
-        android:id="@+id/imageView10"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/tire"
-        android:translationX="-80dp"
-        android:translationY="-110dp" />
+    <Button
+        android:id="@+id/next"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/buttoncolor"
+        android:text="@string/Next"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/tire"
-        android:translationX="78dp"
-        android:translationY="120dp" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/next"
+        android:layout_below="@id/relative"
+        android:layout_centerInParent="false">
 
-    <ImageView
-        android:id="@+id/imageView9"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/tire"
-        android:translationX="-75dp"
-        android:translationY="120dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="230dp"
-        android:layout_height="398dp"
-        android:layout_centerInParent="true"
-        android:src="@mipmap/img_car" />
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="15dp"
+                android:lineSpacingMultiplier="1.5"
+                android:text='01. Apply parking brake.\n 02. Adjust all tires to correct pressure. \n03. Turn ignition on. \n04. Go to information display then choose vehichle data. \n05. Choose vehicle status.  \n06. Go to " reset ".\n 07. Start the engine , press " reset".   \n08. Drive the vehicle over 30 km/h and keep upto 10 munitues.   \n09. Display show tires in green. \n10. Tire pressure active will be shown in display. '
+                android:textSize="18sp" />
+        </LinearLayout>
+    </ScrollView>
 
     <RelativeLayout
+        android:id="@+id/relative"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/buttoncolor">
 
         <TextView
+            android:id="@+id/toper"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

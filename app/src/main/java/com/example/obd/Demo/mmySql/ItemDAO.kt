@@ -96,7 +96,19 @@ class ItemDAO(context: Context) {
     }
 
 
-
+    fun IsFiveTire(name:String):Boolean{
+        val result = db.rawQuery("select `Wheel_Count` from `Summary table` where `OBD1`='$name' and `Wheel_Count` not in('NA') limit 0,1", null)
+        if(result.count > 0 ){
+            result.moveToFirst()
+            do{
+                val count=result.getString(0)
+                return if (count.contains("5")) true else false
+            }while (result.moveToNext())
+        }else{
+            result.close()
+            return false
+        }
+    }
     fun getMakeString(): ArrayList<String>?{
         val makes = arrayListOf<String>()
 
@@ -256,5 +268,29 @@ fun  getPart(make:String,model:String,year:String):module{
         return module
     }
 }
+    fun GetreLarm(make:String,model:String,year:String,act:Context):String{
+        val profilePreferences = act.getSharedPreferences("Setting", Context.MODE_PRIVATE)
+        val a= profilePreferences.getString("Language","English")
+        var colname="English"
+        when(a){
+            "繁體中文"->{ colname="`Relearn Procedure (Traditional Chinese)`"}
+            "简体中文"->{ colname="`Relearn Procedure (Jane)`"}
+            "Deutsche"->{ colname="`Relearn Procedure (German)`"}
+            "English"->{ colname="`Relearn Procedure (English)`"}
+            "Italiano"->{ colname="`Relearn Procedure (Italian)`"}
+        }
+        val result = db.rawQuery(
+                "select $colname from `Summary table` where make='$make' and model='$model' and year='$year' limit 0,1",
+                null)
+
+        if(result.count > 0 ){
+            result.moveToFirst()
+            if(result.getString(0).isEmpty()){  return act.resources.getString(R.string.norelarm)}else{  return result.getString(0)}
+
+        }else{
+            result.close()
+            return act.resources.getString(R.string.norelarm)
+        }
+    }
 
 }

@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.obd.FunctionPage.Key_ID
+import com.example.obd.FunctionPage.OBDII_relearn
 import com.example.obd.MainActivity.HomeFragement
 import com.example.obd.MainActivity.MainPeace
 import com.orange.obd.R
@@ -39,7 +40,7 @@ class YearAdapter(private val a:ArrayList<module>,val act: Activity,private val 
             act.SelectModel=a[position].modele
             act.SelectMake=a[position].make
             val transaction = fragmentManager.beginTransaction()
-            val fragement= Key_ID()
+            val fragement= OBDII_relearn()
             transaction.replace(R.id.frage,fragement )
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                     .addToBackStack(null)

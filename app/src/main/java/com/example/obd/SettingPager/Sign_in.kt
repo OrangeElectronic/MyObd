@@ -45,12 +45,12 @@ class Sign_in : Fragment() {
             run=true
             val admin=admin.text.toString()
             val password=password.text.toString()
-            act.loading()
+            act.LoadBleUI("Data Loading")
             Thread{
                 val a= Fuction.ValidateUser(admin,password)
                 run=false
                 handler.post {
-                    act.LoadingSuccess()
+                    act.LoadingSuccessUI()
                     if(a){
                         val profilePreferences = act.getSharedPreferences("Setting", Context.MODE_PRIVATE)
                         profilePreferences.edit().putString("admin",admin).putString("password",password).commit()

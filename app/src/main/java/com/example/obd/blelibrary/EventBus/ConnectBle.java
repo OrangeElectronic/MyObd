@@ -1,12 +1,12 @@
 package com.example.obd.blelibrary.EventBus;
 
 public class ConnectBle {
-    boolean a=false;
-    public ConnectBle(boolean a){
+    String a="";
+    public ConnectBle(String a){
         this.a=a;
     }
 
-    public boolean getReback() {
+    public String getReback() {
         return a;
     }
 }

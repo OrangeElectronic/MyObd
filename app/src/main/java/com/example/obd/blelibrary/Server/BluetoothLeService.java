@@ -32,6 +32,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.example.obd.blelibrary.BleActivity;
 import com.example.obd.blelibrary.EventBus.ConnectState;
 import com.example.obd.blelibrary.EventBus.WriteData;
 import com.example.obd.tool.Command;
@@ -52,6 +53,7 @@ import static com.example.obd.blelibrary.tool.FormatConvert.bytesToHex;
 public class BluetoothLeService extends Service {
     private final static String TAG = BluetoothLeService.class.getSimpleName();
     boolean writesuccess=true;
+    public BleActivity act;
     private BluetoothManager mBluetoothManager;
     private BluetoothAdapter mBluetoothAdapter;
     private String mBluetoothDeviceAddress;
@@ -87,7 +89,7 @@ public class BluetoothLeService extends Service {
                 intentAction = ACTION_GATT_CONNECTED;
                 mConnectionState = STATE_CONNECTED;
                 broadcastUpdate(intentAction);
-                EventBus.getDefault().post(new ConnectState(true));
+                act.ConnectSituation(true);
                 Log.i(TAG, "Connected to GATT server.");
                 // Attempts to discover services after successful connection.
                 Log.i(TAG, "Attempting to start service discovery:" +
@@ -97,7 +99,7 @@ public class BluetoothLeService extends Service {
                 intentAction = ACTION_GATT_DISCONNECTED;
                 mConnectionState = STATE_DISCONNECTED;
                 Log.i(TAG, "Disconnected from GATT server.");
-                EventBus.getDefault().post(new ConnectState(false));
+                act.ConnectSituation(false);
                 broadcastUpdate(intentAction);
             }
         }
@@ -116,22 +118,24 @@ public class BluetoothLeService extends Service {
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
             tmp=tmp+bytesToHex(characteristic.getValue());
+            act.RX(tmp);
             if(tmp.length()==check||check==0){
-                Command.RXDATA=tmp;
+                act.setRXDATA(tmp);
                 Log.d("WriteReback",(tmp));
             }
         }
 
 @Override
 public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic characteristic,int status){
-    EventBus.getDefault().post(new WriteData(characteristic.getValue()));
+    act.TX(bytesToHex(characteristic.getValue()));
 }
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
             tmp=tmp+bytesToHex(characteristic.getValue());
+            act.RX(tmp);
             if(tmp.length()==check||check==0){
-            Command.RXDATA=tmp;
+                act.setRXDATA(tmp);
                 Log.d("WriteReback",(tmp));
             }
 

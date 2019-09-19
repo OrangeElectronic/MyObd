@@ -150,11 +150,11 @@ class Key_ID : Fragment() {
             if (rootView.lrt3.getText().length >= 6 && rootView.lrt3.getText().length <= need) {
                 write.add(rootView.lrt3.getText().toString())
             }
-            act.loading()
+            act.LoadBleUI("Pogramming")
             Thread{
                 val iscuss=act.command.setTireId(write)
                 handler.post {
-                    act.LoadingSuccess()
+                    act.LoadingSuccessUI()
                     if(iscuss){     updateui(SUCCESS)}else{
                         updateui(FAIL)
                     }
@@ -162,7 +162,7 @@ class Key_ID : Fragment() {
             }.start()
         }
         rootView.scaner.setOnClickListener{
-            act.loading()
+            act.LoadBleUI("Data Loading")
             Downs19()
             rootView.Select_Key.visibility=View.GONE
             scanner.Scan_For=scanner.ID
@@ -195,7 +195,7 @@ class Key_ID : Fragment() {
                 RequestPermission() }
             SCAN_OR_KEY=0
         }
-        rootView.keyin.setOnClickListener { act.loading()
+        rootView.keyin.setOnClickListener { act.LoadBleUI("Data Loading")
             Downs19()
             rootView.Select_Key.visibility=View.GONE}
         updateui(WAIT)
@@ -204,6 +204,7 @@ class Key_ID : Fragment() {
         rootView.Rft.setText(ScanRf)
         rootView.Lrt.setText(ScanLr)
         rootView.lrt3.setText(ScanSp)
+        if(act.itemDAO.IsFiveTire(directfit)){rootView.lrt3.visibility=View.VISIBLE}else{rootView.lrt3.visibility=View.GONE}
         return rootView
     }
     fun Downs19(){
@@ -220,19 +221,20 @@ class Key_ID : Fragment() {
                         act.back.isEnabled=true
                         if(Pro){      Toast.makeText(activity,"燒錄成功",Toast.LENGTH_SHORT).show();}else{
                             Toast.makeText(activity,"燒錄失敗",Toast.LENGTH_SHORT).show();
-                            val changer=ReProgram()
-                            changer.act=act
-                            val intent = Intent(act,changer::class.java)
+
+                            val intent = Intent(act,ReProgram::class.java)
                             startActivity(intent)
                             updateui(FAIL)
                         }
-                        act.LoadingSuccess()
+                        act.LoadingSuccessUI()
                     }
                 }else{
-                    val changer=ReProgram()
-                    changer.act=act
-                    val intent = Intent(act,changer::class.java)
-                    startActivity(intent)
+                    handler.post {
+                        act.LoadingSuccessUI()
+                        act.back.isEnabled=true
+                        val intent = Intent(act,ReProgram::class.java)
+                        startActivity(intent)}
+
                 }
         }.start()
     }
