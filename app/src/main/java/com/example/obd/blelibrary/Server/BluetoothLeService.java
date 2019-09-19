@@ -58,7 +58,7 @@ public class BluetoothLeService extends Service {
     public BluetoothGatt mBluetoothGatt;
     private int mConnectionState = STATE_DISCONNECTED;
     int check=0;
-    byte [] tmp=new byte[0];
+    String  tmp="";
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
@@ -115,11 +115,11 @@ public class BluetoothLeService extends Service {
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic,
                                          int status) {
- tmp=arrayAdd(tmp,characteristic.getValue());
-            if(tmp.length==check||check==0){
-                Command.RXDATA=characteristic.getValue();
+            tmp=tmp+bytesToHex(characteristic.getValue());
+            if(tmp.length()==check||check==0){
+                Command.RXDATA=tmp;
+                Log.d("WriteReback",(tmp));
             }
-            Log.d("WriteReback",bytesToHex(tmp));
         }
 
 @Override
@@ -129,11 +129,12 @@ public void onCharacteristicWrite(BluetoothGatt gatt,BluetoothGattCharacteristic
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
-            tmp=arrayAdd(tmp,characteristic.getValue());
-            if(tmp.length==check||check==0){
-            Command.RXDATA=characteristic.getValue();
+            tmp=tmp+bytesToHex(characteristic.getValue());
+            if(tmp.length()==check||check==0){
+            Command.RXDATA=tmp;
+                Log.d("WriteReback",(tmp));
             }
-            Log.d("WriteReback",bytesToHex(tmp));
+
         }
     };
 

@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.obd.MainActivity.HomeFragement
+import com.example.obd.MainActivity.MainPeace
 import com.example.obd.MainActivity.YearFragement
 import com.orange.obd.R
 import com.orange_electronic.orangeobd.mmySql.module
@@ -34,8 +35,8 @@ class ModelAdapter(private val a:ArrayList<module>,val act: Activity,private val
         holder.text.text=a[position].modele
         holder.selectbutton.setOnClickListener {
             val args = Bundle()
-            args.putString(HomeFragement.string_make, a[position].make)
-            args.putString(HomeFragement.string_model, a[position].modele)
+            (act as MainPeace).SelectMake=a[position].make
+             act.SelectModel= a[position].modele
             val transaction = fragmentManager.beginTransaction()
             val fragement=YearFragement()
             fragement.arguments=args

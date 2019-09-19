@@ -1,10 +1,18 @@
 package com.orango.electronic.orangetxusb.mmySql
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.os.Bundle
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.util.Log
+import com.example.obd.FunctionPage.Key_ID
+import com.example.obd.MainActivity.HomeFragement
+import com.example.obd.MainActivity.MainPeace
+import com.orange.obd.R
 import com.orange_electronic.orangeobd.mmySql.module
 import java.util.ArrayList
 
@@ -113,7 +121,7 @@ class ItemDAO(context: Context) {
     fun getMake(): ArrayList<module>?{
         val makes = arrayListOf<module>()
         val result = db.rawQuery(
-            "select distinct makeimg.* from makeimg,$TABLE_NAME where makeimg.name=$TABLE_NAME.Make",null)
+            "select distinct `Make`,`Make_img` from `Summary table` where `Make` IS NOT NULL and `Make_img` not in('NA') and `OBD1` not in('NA') order by `Make` asc",null)
         if(result.count > 0){
             result.moveToFirst()
             do{
@@ -134,10 +142,33 @@ class ItemDAO(context: Context) {
             return null
         }
     }
+    fun GoOk(code:String,fragmentManager: FragmentManager,activity: MainPeace){
+        val sql="select  `Make`,`Model`,`Year`,`Make_Img`  from `Summary table` where `Direct Fit` not in('NA') and `Make_Img` not in('NA') and `MMY number`='$code' limit 0,1"
+        val result = db.rawQuery(
+                sql,null)
+        if(result.count > 0){
+            result.moveToFirst()
+            do{
+                activity.SelectMake=result.getString(0)
+                activity.SelectModel=result.getString(1)
+                activity.SelectYear=result.getString(2)
+                val transaction = fragmentManager.beginTransaction()
+                val fragement= Key_ID()
+                transaction.replace(R.id.frage,fragement )
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                        .addToBackStack(null)
+                        .commit()
+            }while (result.moveToNext())
+            // 關閉Cursor物件
+            result.close()
+        }else{
+            result.close()
+        }
+    }
     fun getmodel(name:String): ArrayList<module>?{
         val makes = arrayListOf<module>()
         val result = db.rawQuery(
-                "select distinct model from mmy_table where make='$name'",null)
+                "select distinct model from `Summary table` where make='$name' and `OBD1` not in('NA') order by model asc",null)
         if(result.count > 0){
             result.moveToFirst()
             do{
@@ -160,7 +191,7 @@ class ItemDAO(context: Context) {
     fun getYear(make:String,model:String):ArrayList<module>?{
         val models = arrayListOf<module>()
         val result = db. rawQuery(
-                "select distinct Year from $TABLE_NAME where model = '$model' and make = '$make' order by Year asc",
+                "select distinct Year from `Summary table` where model='$model' and make='$make' and `OBD1` not in('NA') order by Year asc",
                 null)
 
         if(result.count > 0){
@@ -202,10 +233,10 @@ class ItemDAO(context: Context) {
             return null
         }
     }
-fun getPart(make:String,model:String,year:String):module{
+fun  getPart(make:String,model:String,year:String):module{
     var module = module()
     val result = db. rawQuery(
-            "select distinct DirectFit from $TABLE_NAME where model = '$model' and make = '$make' and year='$year'",
+            "select `OBD1` from `Summary table` where Make='$make' and Model='$model' and year='$year' and `OBD1` not in('NA') limit 0,1",
             null)
 
     if(result.count > 0){

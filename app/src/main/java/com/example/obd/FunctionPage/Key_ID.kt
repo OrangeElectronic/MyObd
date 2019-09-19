@@ -1,9 +1,15 @@
 package com.example.obd.FunctionPage
 
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
+import android.support.v7.app.AlertDialog
 import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.obd.MainActivity.HomeFragement
 import com.example.obd.MainActivity.MainPeace
+import com.example.obd.MainActivity.QrcodeScanner
 
 import com.orange.obd.R
 import com.example.obd.tool.CustomTextWatcher
@@ -36,46 +43,111 @@ class Key_ID : Fragment() {
         val FAIL=1
         val WAIT=2
     }
+    var first=true
+    var ScanLf=""
+    var ScanRf=""
+    var ScanRr=""
+    var ScanLr=""
+    var ScanSp=""
+    var scanner= QrcodeScanner()
     val itemDAO: ItemDAO by lazy { ItemDAO(activity!!) }
     lateinit var directfit:String
+    var ShowSelect=true
+    var SCAN_OR_KEY=1
+    var need=8
+    override fun onResume() {
+        super.onResume()
+        first=true
+        rootView.Lft.setText(ScanLf)
+        rootView.Rrt.setText(ScanRr)
+        rootView.Rft.setText(ScanRf)
+        rootView.Lrt.setText(ScanLr)
+        rootView.lrt3.setText(ScanSp)
+        rootView.Lft.setBackgroundResource( if (ScanLf.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
+        rootView.Rrt.setBackgroundResource( if (ScanRr.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
+        rootView.Rft.setBackgroundResource( if (ScanRf.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
+        rootView.Lrt.setBackgroundResource( if (ScanLr.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
+        rootView.lrt3.setBackgroundResource( if (ScanSp.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        first=false
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        act=activity!!as MainPeace
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         rootView=inflater.inflate(R.layout.fragment_key__id, container, false)
-        var make=arguments!!.getString(HomeFragement.string_make)
-        var model=arguments!!.getString(HomeFragement.string_model)
-        var year=arguments!!.getString(HomeFragement.string_year)
+        if(ShowSelect){rootView.Select_Key.visibility=View.VISIBLE}else{rootView.Select_Key.visibility=View.GONE}
+        if(SCAN_OR_KEY==0){
+            scanner.Scan_For=scanner.ID
+            rootView.Lft.isFocusable=false
+            rootView.Rrt.isFocusable=false
+            rootView.Rft.isFocusable=false
+            rootView.Lrt.isFocusable=false
+            rootView.lrt3.isFocusable=false
+            rootView.Lft.setOnClickListener {
+                scanner.place=scanner.LF
+                scanner.edit=rootView.Lft
+                RequestPermission() }
+            rootView.Rrt.setOnClickListener {
+                scanner.place=scanner.Rr
+                scanner.edit=rootView.Rrt
+                RequestPermission()
+            }
+            rootView.Rft.setOnClickListener {
+                scanner.place=scanner.Rf
+                scanner.edit=rootView.Rft
+                RequestPermission()
+            }
+            rootView.Lrt.setOnClickListener {
+                scanner.place=scanner.Lr
+                scanner.edit=rootView.Lrt
+                RequestPermission() }
+            rootView.lrt3.setOnClickListener {
+                scanner.place=scanner.Sp
+                scanner.edit=rootView.lrt3
+                RequestPermission() }
+        }
+        var make=act.SelectMake
+        var model=act.SelectModel
+        var year=act.SelectYear
          directfit=itemDAO.getPart(make, model, year).directfit
         rootView.mmy_text.text="$make/$model/$year"
-        act=activity!!as MainPeace
+        scanner.Idcopy=this
+        scanner.need=need
         rootView.Lft.addTextChangedListener(CustomTextWatcher(rootView.Lft))
         rootView.Rft.addTextChangedListener(CustomTextWatcher(rootView.Rft))
         rootView.Lrt.addTextChangedListener(CustomTextWatcher(rootView.Lrt))
         rootView.Rrt.addTextChangedListener(CustomTextWatcher(rootView.Rrt))
         rootView.lrt3.addTextChangedListener(CustomTextWatcher(rootView.lrt3))
-        rootView.Lft.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(8)))
-        rootView.lrt3.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(8)))
-        rootView.Rft.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(8)))
-        rootView.Lrt.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(8)))
-        rootView.Rrt.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(8)))
+        rootView.Lft.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
+        rootView.lrt3.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
+        rootView.Rft.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
+        rootView.Lrt.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
+        rootView.Rrt.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
         rootView.program.setOnClickListener {
             val write = ArrayList<String>()
-            if (rootView.Lft.getText().length < 6 || rootView.Lft.getText().length > 8) {
+            if (rootView.Lft.getText().length < 6 || rootView.Lft.getText().length > need) {
                 return@setOnClickListener
             }
-            if (rootView.Rft.getText().length < 6 || rootView.Rft.getText().length > 8) {
+            if (rootView.Rft.getText().length < 6 || rootView.Rft.getText().length > need) {
                 return@setOnClickListener
             }
-            if (rootView.Lrt.getText().length < 6 || rootView.Lrt.getText().length > 8) {
+            if (rootView.Lrt.getText().length < 6 || rootView.Lrt.getText().length > need) {
                 return@setOnClickListener
             }
-            if (rootView.Rrt.getText().length < 6 || rootView.Rrt.getText().length > 8) {
+            if (rootView.Rrt.getText().length < 6 || rootView.Rrt.getText().length > need) {
                 return@setOnClickListener
             }
             write.add(rootView.Rft.getText().toString())
             write.add(rootView.Rrt.getText().toString())
             write.add(rootView.Lrt.getText().toString())
             write.add(rootView.Lft.getText().toString())
-            if (rootView.lrt3.getText().length >= 6 && rootView.lrt3.getText().length <= 8) {
+            if (rootView.lrt3.getText().length >= 6 && rootView.lrt3.getText().length <= need) {
                 write.add(rootView.lrt3.getText().toString())
             }
             act.loading()
@@ -89,29 +161,78 @@ class Key_ID : Fragment() {
                 }
             }.start()
         }
-
+        rootView.scaner.setOnClickListener{
+            act.loading()
+            Downs19()
+            rootView.Select_Key.visibility=View.GONE
+            scanner.Scan_For=scanner.ID
+            rootView.Lft.isFocusable=false
+            rootView.Rrt.isFocusable=false
+            rootView.Rft.isFocusable=false
+            rootView.Lrt.isFocusable=false
+            rootView.lrt3.isFocusable=false
+            rootView.Lft.setOnClickListener {
+                scanner.place=scanner.LF
+                scanner.edit=rootView.Lft
+                RequestPermission() }
+            rootView.Rrt.setOnClickListener {
+                scanner.place=scanner.Rr
+                scanner.edit=rootView.Rrt
+                RequestPermission()
+            }
+            rootView.Rft.setOnClickListener {
+                scanner.place=scanner.Rf
+                scanner.edit=rootView.Rft
+                RequestPermission()
+            }
+            rootView.Lrt.setOnClickListener {
+                scanner.place=scanner.Lr
+                scanner.edit=rootView.Lrt
+                RequestPermission() }
+            rootView.lrt3.setOnClickListener {
+                scanner.place=scanner.Sp
+                scanner.edit=rootView.lrt3
+                RequestPermission() }
+            SCAN_OR_KEY=0
+        }
+        rootView.keyin.setOnClickListener { act.loading()
+            Downs19()
+            rootView.Select_Key.visibility=View.GONE}
         updateui(WAIT)
-        act.loading()
-        Downs19()
+        rootView.Lft.setText(ScanLf)
+        rootView.Rrt.setText(ScanRr)
+        rootView.Rft.setText(ScanRf)
+        rootView.Lrt.setText(ScanLr)
+        rootView.lrt3.setText(ScanSp)
         return rootView
     }
     fun Downs19(){
+        handler.post { act.back.isEnabled=false }
         Thread{
            val a= DownS19(directfit,act)
                 if(a){
+
                     if(!act.command.HandShake()){
                         act.command.Reboot()
                     }
                     val Pro=act.command.HandShake()&& act.command.WriteFlash(act,directfit,296)
                     handler.post {
+                        act.back.isEnabled=true
                         if(Pro){      Toast.makeText(activity,"燒錄成功",Toast.LENGTH_SHORT).show();}else{
                             Toast.makeText(activity,"燒錄失敗",Toast.LENGTH_SHORT).show();
+                            val changer=ReProgram()
+                            changer.act=act
+                            val intent = Intent(act,changer::class.java)
+                            startActivity(intent)
                             updateui(FAIL)
                         }
                         act.LoadingSuccess()
                     }
                 }else{
-                    Downs19()
+                    val changer=ReProgram()
+                    changer.act=act
+                    val intent = Intent(act,changer::class.java)
+                    startActivity(intent)
                 }
         }.start()
     }
@@ -154,6 +275,64 @@ var handler=Handler()
                 rootView.Lr.setBackgroundResource(R.mipmap.icon_tire_normal)
                 rootView.Rr.setBackgroundResource(R.mipmap.icon_tire_normal)
             }
+        }
+    }
+    fun RequestPermission() {
+        if (ActivityCompat.checkSelfPermission(activity!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                            activity!!,
+                            Manifest.permission.CAMERA
+                    )
+            ) {
+                AlertDialog.Builder(activity!!)
+                        .setCancelable(false)
+                        .setTitle("需要相機權限")
+                        .setMessage("需要相機權限才能掃描BARCODE!")
+                        .setPositiveButton(
+                                "確認"
+                        ) { dialogInterface, i ->
+                            ActivityCompat.requestPermissions(
+                                    activity!!,
+                                    arrayOf(Manifest.permission.CAMERA),
+                                    1
+                            )
+                        }
+                        .show()
+            } else {
+                ActivityCompat.requestPermissions(activity!!, arrayOf(Manifest.permission.CAMERA), 1)
+            }
+        }else{
+            first=false
+            val transaction = fragmentManager!!.beginTransaction()
+            transaction.replace(R.id.frage, scanner, "Scanner")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                    .addToBackStack("Scanner")
+                    // 提交事務
+                    .commit()}
+    }
+
+    override fun onRequestPermissionsResult(
+            requestCode: Int,
+            permissions: Array<String>,
+            grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1 ->
+                if (grantResults.isNotEmpty()) {
+                    for (i in grantResults.indices) {
+                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            first=false
+                            val transaction = fragmentManager!!.beginTransaction()
+                            transaction.replace(R.id.frage, scanner, "Scanner")
+                                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                                    .addToBackStack("Scanner")
+                                    // 提交事務
+                                    .commit()
+
+                        }
+                    }
+                }
         }
     }
 }

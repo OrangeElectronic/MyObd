@@ -30,7 +30,7 @@ class ModelFragement : Fragment() {
         rootView= inflater.inflate(R.layout.activity_select_model, container, false)
         re=rootView.findViewById(R.id.re)
         re.layoutManager= GridLayoutManager(activity,2)
-        re.adapter= ModelAdapter(itemDAO.getmodel(arguments!!.getString(HomeFragement.string_make))!!,activity!!,fragmentManager!!)
+        re.adapter= ModelAdapter(itemDAO.getmodel((activity as MainPeace).SelectMake)!!,activity!!,fragmentManager!!)
         return rootView
     }
 

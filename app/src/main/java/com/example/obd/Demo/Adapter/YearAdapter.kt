@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.example.obd.FunctionPage.Key_ID
 import com.example.obd.MainActivity.HomeFragement
+import com.example.obd.MainActivity.MainPeace
 import com.orange.obd.R
 import com.orange_electronic.orangeobd.mmySql.module
 import com.orango.electronic.orangetxusb.mmySql.ItemDAO
@@ -34,13 +35,11 @@ class YearAdapter(private val a:ArrayList<module>,val act: Activity,private val 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.text.text=a[position].year
         holder.mView.setOnClickListener {
-            val args = Bundle()
-            args.putString(HomeFragement.string_make, a[position].make)
-            args.putString(HomeFragement.string_model, a[position].modele)
-            args.putString(HomeFragement.string_year, a[position].year)
+            (act as MainPeace).SelectYear=a[position].year
+            act.SelectModel=a[position].modele
+            act.SelectMake=a[position].make
             val transaction = fragmentManager.beginTransaction()
             val fragement= Key_ID()
-            fragement.arguments=args
             transaction.replace(R.id.frage,fragement )
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                     .addToBackStack(null)

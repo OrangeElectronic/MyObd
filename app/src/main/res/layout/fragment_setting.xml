@@ -60,11 +60,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" android:id="@+id/textView70"
                     android:layout_centerVertical="true" android:layout_marginLeft="78dp" android:textSize="18sp"/>
+
             <ImageView
-                    android:src="@mipmap/privarypolicer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:id="@+id/imageView67"
-                    android:layout_centerVertical="true" android:layout_marginLeft="10dp"/>
+                android:id="@+id/imageView67"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="0dp"
+                android:src="@mipmap/privarypolicer" />
         </RelativeLayout>
         <ImageView
                 android:src="@color/buttoncolor"

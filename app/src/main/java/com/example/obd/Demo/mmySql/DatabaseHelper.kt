@@ -12,7 +12,7 @@ import java.io.File
 
 class DatabaseHelper(private val mContext: Context) : SQLiteOpenHelper(mContext, DB_NAME, null, 1) {
     companion object {
-        internal var DB_NAME = "mmytb.db"
+        internal var DB_NAME = "usb_tx_mmy.db"
     }
     var DB_PATH = mContext.getDatabasePath(DB_NAME)
 
@@ -77,6 +77,7 @@ class DatabaseHelper(private val mContext: Context) : SQLiteOpenHelper(mContext,
 //            val outFileName = "$DB_PATH"
 //            var file=File("$DB_PATH".replace(DB_NAME,""))
 //            file.mkdirs()
+//            Log.d("file",file.path)
 //            val mOutputStream = FileOutputStream(outFileName)
 //            val buffer = ByteArray(1024)
 //            var count = 0
@@ -100,8 +101,8 @@ class DatabaseHelper(private val mContext: Context) : SQLiteOpenHelper(mContext,
     fun openDataBase(): Boolean {
         val mPath = "$DB_PATH"
         db = SQLiteDatabase.openDatabase(
-            mPath, null,
-            SQLiteDatabase.OPEN_READWRITE
+                mPath, null,
+                SQLiteDatabase.OPEN_READONLY
         )
         return db.isOpen
     }

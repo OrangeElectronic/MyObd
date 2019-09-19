@@ -49,7 +49,8 @@ public class ScanBle extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void Event(SerchDevice a){
         try{
-            if(!ble.contains(a.getDevic())){  ble.add(a.getDevic());
+            if(!ble.contains(a.getDevic())&&a.getDevic().getName()!=null){
+                ble.add(a.getDevic());
                 selectBle.notifyDataSetChanged();}
         }catch (Exception e){
             Log.w("error",e.getMessage());}

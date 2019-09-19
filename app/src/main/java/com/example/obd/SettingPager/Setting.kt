@@ -27,35 +27,36 @@ lateinit var rootView:View
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-//        rootView=inflater.inflate(R.layout.fragment_setting, container, false)
-//        rootView.area.setOnClickListener{
-//            val transaction = fragmentManager!!.beginTransaction()
-//            transaction.replace(R.id.nav_host_fragment,
-//                Set_Languages(), "SetArea")
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-//                .addToBackStack("SetArea")
-//                // 提交事務
-//                .commit()
-//        }
-//        rootView.policy.setOnClickListener{
-//            val transaction = fragmentManager!!.beginTransaction()
-//            transaction.replace(R.id.frage,
-//                PrivaryPolicy(), "policy")
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-//                .addToBackStack("policy")
-//                // 提交事務
-//                .commit()
-//        }
-//        rootView.version.setOnClickListener{
-//            val transaction = fragmentManager!!.beginTransaction()
-//            transaction.replace(R.id.nav_host_fragment,
-//                Update(), "Update")
-//                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-//                .addToBackStack("Update")
-//                // 提交事務
-//                .commit()
-//        }
+        rootView=inflater.inflate(R.layout.fragment_setting, container, false)
+        rootView.area.setOnClickListener{
+            Set_Languages.place=1
+            val transaction = fragmentManager!!.beginTransaction()
+            transaction.replace(R.id.frage,
+                Set_Languages(), "SetArea")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                .addToBackStack("SetArea")
+                // 提交事務
+                .commit()
+        }
+        rootView.policy.setOnClickListener{
+            PrivaryPolicy.place=1
+            val transaction = fragmentManager!!.beginTransaction()
+            transaction.replace(R.id.frage,
+                PrivaryPolicy(), "policy")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                .addToBackStack("policy")
+                // 提交事務
+                .commit()
+        }
+        rootView.version.setOnClickListener{
+            val transaction = fragmentManager!!.beginTransaction()
+            transaction.replace(R.id.frage,
+                Update(), "Update")
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                .addToBackStack("Update")
+                // 提交事務
+                .commit()
+        }
         return rootView
     }
     override fun onResume() {

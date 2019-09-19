@@ -27,7 +27,9 @@ import com.example.obd.blelibrary.tool.FormatConvert
 import com.example.obd.tool.Command
 import com.example.obd.tool.FtpManager
 import com.example.obd.tool.LanguageUtil
+import com.orango.electronic.orangetxusb.SettingPagr.PrivaryPolicy
 import com.orango.electronic.orangetxusb.SettingPagr.Set_Languages
+import com.orango.electronic.orangetxusb.mmySql.ItemDAO
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -35,94 +37,29 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 class MainPeace : AppCompatActivity(), FragmentManager.OnBackStackChangedListener {
-    companion object {
-        private val permissionRequestCode = 10
-        private val Permissions = arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-        var blename:String=""
-    }
 
+    val itemDAO: ItemDAO by lazy { ItemDAO(applicationContext) }
     override fun onBackStackChanged() {
 
     }
-    override fun onResume() {
-        super.onResume()
-        checkPermissions()
+    companion object {
+        var blename:String=""
     }
-    private fun checkPermissions() {
-        val permissionDeniedList = ArrayList<String>()
-        for (permission in Permissions) {
-            val permissionCheck = ContextCompat.checkSelfPermission(this, permission)
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                onPermissionGranted(permission)
-            } else {
-                permissionDeniedList.add(permission)
-            }
-        }
-        if (!permissionDeniedList.isEmpty()) {
-            val deniedPermissions = permissionDeniedList.toTypedArray()
-            ActivityCompat.requestPermissions(this, deniedPermissions, permissionRequestCode)
-        }
-    }
-    @SuppressLint("ResourceAsColor")
-    private fun onPermissionGranted(permission: String) {
-        when (permission) {
-            Manifest.permission.READ_EXTERNAL_STORAGE -> {
-            }
-            Manifest.permission.WRITE_EXTERNAL_STORAGE -> {
-                val profilePreferences = getSharedPreferences("Setting", Context.MODE_PRIVATE)
-                val a= profilePreferences.getString("Language","English")
-                when(a){
-                    "繁體中文"->{ LanguageUtil.updateLocale(this, LanguageUtil.LOCALE_TAIWAIN);}
-                    "简体中文"->{ LanguageUtil.updateLocale(this, LanguageUtil.LOCALE_CHINESE);}
-                    "Deutsche"->{ LanguageUtil.updateLocale(this, LanguageUtil.LOCALE_DE);}
-                    "English"->{ LanguageUtil.updateLocale(this, LanguageUtil.LOCALE_ENGLISH);}
-                    "Italiano"->{ LanguageUtil.updateLocale(this, LanguageUtil.LOCALE_ITALIANO);}
-                }
-                val handler = Handler()
-//                handler.postDelayed(Runnable {
-//                    val intent = Intent(this,NavigationActivity::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                },2000)
-                if(profilePreferences.getString("admin","nodata").equals("nodata")){
-                    handler.postDelayed(Runnable {
-                        feage.setBackgroundColor(R.color.backgroung)
-                        val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.frage, Set_Languages())
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-                                .commit()
-                    },2000)
-                }else{
-                    handler.postDelayed(Runnable {
-                        feage.setBackgroundColor(R.color.backgroung)
-                        val transaction = supportFragmentManager.beginTransaction()
-                        transaction.replace(R.id.frage, HomeFragement())
-                                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-                                .commit()
-                    },2000)
-                }
 
-//                LanguageUtil.updateLocale(this, LanguageUtil.LOCALE_ENGLISH);
-//                val handler = Handler()
-//                handler.postDelayed(Runnable {
-//                    val intent = Intent(this,SetArea::class.java)
-//                    startActivity(intent)
-//                    finish()
-//                },2000)
-            }
-        }
-    }
     var iBinder:IBinder?=null
     var command= Command()
+    var SelectMake=""
+    var SelectModel=""
+    var SelectYear=""
     lateinit var feage:FrameLayout
     lateinit var timer: Timer
     lateinit var textView: TextView
     lateinit var back: ImageView
 lateinit var load:RelativeLayout
+    private var savedState: Bundle? = null
     var bleServiceControl = BleServiceControl()
     lateinit var anim: LottieAnimationView
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_peace)
@@ -133,6 +70,8 @@ lateinit var load:RelativeLayout
         textView=findViewById(R.id.textView11)
         anim=findViewById(R.id.animation_view)
         supportFragmentManager.addOnBackStackChangedListener(this)
+        savedState = savedInstanceState
+        if(savedState != null) onBackStackChanged()
         timer=Timer()
         timer.schedule(0,3000){
 runOnUiThread {
@@ -148,6 +87,23 @@ bleServiceControl.connect(blename,this@MainPeace)
         }
         loading()
         DonloadMMy()
+        val profilePreferences = getSharedPreferences("Setting", Context.MODE_PRIVATE)
+        val handler = Handler()
+        if(profilePreferences.getString("admin","nodata").equals("nodata")){
+            Set_Languages.place=0
+            PrivaryPolicy.place=0
+                feage.setBackgroundColor(resources.getColor(R.color.backgroung))
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.frage, Set_Languages())
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                        .commit()
+        }else{
+                feage.setBackgroundColor(R.color.backgroung)
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.frage, HomeFragement())
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                        .commit()
+        }
     }
 fun DonloadMMy(){
     Thread{
@@ -220,17 +176,27 @@ load.visibility= View.VISIBLE
             Log.d("連線","連線ok")
         } else {
             handler.post {
+                Log.d("連線","Bluetooth is disconnected")
                 LoadingSuccess()
+                fal=10
+                blename=""
+                supportFragmentManager.addOnBackStackChangedListener(this)
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.add(R.id.frage, HomeFragement(), "Home")
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                        // 提交事務
+                        .commit()
             }
 
         }
     }
+    var fal=0
     private var handler= Handler()
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun Event(a: ConnectBle) {
         loadingble()
         Thread{
-            var fal=0
+            fal=0
             while(true){
                 if(bleServiceControl.isconnect||fal==10){break}
                 Thread.sleep(1000)
@@ -238,13 +204,11 @@ load.visibility= View.VISIBLE
             }
             handler.post {LoadingSuccess()
             if(bleServiceControl.isconnect){
-                val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.frage, MakeFragement())
+                val transaction = supportFragmentManager!!.beginTransaction()
+                transaction.replace(R.id.frage, Selection())
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                         .addToBackStack(null)
                         .commit()
-            }else{
-                Toast.makeText(this,"connect success",Toast.LENGTH_SHORT).show()
             }
             }
         }.start()

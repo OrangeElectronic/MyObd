@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".FunctionPage.Key_ID">
 
     <EditText
@@ -302,5 +303,99 @@
             android:layout_height="200dp"
             android:layout_centerInParent="true"
             android:src="@mipmap/icon_car" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Select_Key"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView73"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.7"
+            android:src="@color/white" />
+
+        <RelativeLayout
+            android:layout_width="284dp"
+            android:layout_height="184dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/cornerbt">
+
+            <TextView
+                android:id="@+id/textView80"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="Original Sensor"
+                android:textColor="@color/white" />
+
+            <ImageView
+                android:id="@+id/imageView74"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/textView80"
+                android:src="@android:color/white" />
+
+            <RelativeLayout
+                android:id="@+id/scaner"
+                android:layout_width="141dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/imageView74">
+
+                <TextView
+                    android:id="@+id/textView81"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/imageView77"
+                    android:gravity="center"
+                    android:text="@string/Scan_Code"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@+id/imageView77"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_marginLeft="29dp"
+                    android:layout_marginTop="2dp"
+                    android:src="@mipmap/scan" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/keyin"
+                android:layout_width="141dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/imageView74"
+                android:layout_alignParentEnd="true">
+
+                <TextView
+                    android:id="@+id/textView82"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/imageView75"
+                    android:gravity="center"
+                    android:text="@string/Key_in_the_original_sensor_ID_number"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@+id/imageView75"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="29dp"
+                    android:src="@mipmap/key_in" />
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/imageView78"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/imageView74"
+                android:layout_centerHorizontal="true"
+                android:src="@color/white" />
+        </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

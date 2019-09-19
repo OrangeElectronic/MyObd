@@ -13,6 +13,9 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.util.Log;
 
+
+import com.example.obd.tool.Command;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -138,12 +141,12 @@ Log.w("s","連線");
     }
 
     public boolean WriteCmd(String write,int check){
-
+        Command.RXDATA="";
 for(BluetoothGattCharacteristic a:mGattCharacteristics){
 //    Log.w("char",""+a.getUuid());
     if(TXUUID.equals(a.getUuid())){
-        mBluetoothLeService.check=check;
-        mBluetoothLeService.tmp=new byte[0];
+        mBluetoothLeService.check=check*2;
+        mBluetoothLeService.tmp="";
         mNotifyCharacteristic=a;
         mNotifyCharacteristic.setValue(StringHexToByte(write));
         mBluetoothLeService.writeCharacteristic(mNotifyCharacteristic);

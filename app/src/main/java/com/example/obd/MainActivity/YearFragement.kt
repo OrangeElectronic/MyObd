@@ -28,8 +28,8 @@ class YearFragement : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         rootView= inflater.inflate(R.layout.activity_year, container, false)
-        var make=arguments!!.getString(HomeFragement.string_make)
-        var model=arguments!!.getString(HomeFragement.string_model)
+        var make=(activity as MainPeace).SelectMake
+        var model=(activity as MainPeace).SelectModel
         re=rootView.findViewById(R.id.re)
         re.layoutManager= GridLayoutManager(activity,2)
         re.adapter= YearAdapter(itemDAO.getYear(make,model)!!,activity!!,fragmentManager!!)

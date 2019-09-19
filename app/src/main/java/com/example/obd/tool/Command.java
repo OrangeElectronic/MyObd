@@ -14,7 +14,7 @@ import java.util.Date;
 import static com.example.obd.Demo.blelibrary.tool.FormatConvert.StringHexToByte;
 
 public  class Command {
-    public  static byte[] RXDATA=new byte[0];
+    public  static String RXDATA="";
     public static String WRITE_SUCCESS="F502000300F40A";
     public static String Program_Flash_Fail="F502000302F60A";
     public static String VERIFY_FAIL="F502000303F70A";
@@ -32,7 +32,6 @@ public  class Command {
     //握手
     public  boolean HandShake(){
         try{
-            RXDATA=new byte[0];;
             String a="0A0000030000F5";
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
             Date past=sdf.parse(sdf.format(new Date()));
@@ -41,7 +40,7 @@ public  class Command {
                 Date now=sdf.parse(sdf.format(new Date()));
                 double time=getDatePoor(now,past);
                 if(time>3){return false;}
-                if(RXDATA.length==7){return true;}
+                if(RXDATA.length()==14){return true;}
             }
         }catch (Exception e){e.printStackTrace();return false;}
 
@@ -49,7 +48,6 @@ public  class Command {
     //Reboot
     public  boolean Reboot(){
         try{
-            RXDATA=new byte[0];;
             String a="0A0D00030000F5";
             bleServiceControl.WriteCmd(addcheckbyte(a),7);
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
@@ -66,7 +64,7 @@ public  class Command {
 // 燒寫&amp;驗證Flash
     public  boolean WriteFlash(final Context context,final String FileName,final int Ind){
                 try{
-                    FileInputStream fo=new FileInputStream(context.getApplicationContext().getFilesDir().getPath()+"/"+FileName+".srec");
+                    FileInputStream fo=new FileInputStream(context.getApplicationContext().getFilesDir().getPath()+"/"+FileName+".s19");
                     InputStreamReader fr = new InputStreamReader(fo);
                     BufferedReader br = new BufferedReader(fr);
                     StringBuilder sb = new StringBuilder();
@@ -108,7 +106,6 @@ if(b>=255){b=b-255;}
     }
 //設定tireid
 public  boolean setTireId(final ArrayList<String> Id) {
-        RXDATA=new byte[0];
     ArrayList<String> tmpsend=new ArrayList<>();
     tmpsend.add("60A200FFFFFFFFC20A");
     int i=1;
@@ -135,7 +132,7 @@ while (true){
     if(time>10){
         return false;
     }
-    if(bytesToHex(RXDATA).equals("60B201FFFFFFFFD30A")){
+    if(RXDATA.equals("60B201FFFFFFFFD30A")){
         return true;
     }
 }
@@ -194,7 +191,6 @@ while (true){
         return command;
     }
     public  boolean check(String data){
-        RXDATA=new byte[0];;
         bleServiceControl.WriteCmd(addcheckbyte(data),8);
         try{
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
@@ -205,12 +201,10 @@ while (true){
                 double time=getDatePoor(now,past);
                 if(time>0.3){
                     past=sdf.parse(sdf.format(new Date()));
-                    RXDATA=new byte[0];
                     bleServiceControl.WriteCmd(addcheckbyte(data),8);
                     fal++;
                 }
-                if(RXDATA.length>0){
-                    RXDATA=new byte[0];;
+                if(RXDATA.length()>0){
                     return true;
                 }
             }

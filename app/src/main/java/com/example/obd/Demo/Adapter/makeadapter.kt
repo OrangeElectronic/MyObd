@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.example.obd.MainActivity.HomeFragement
+import com.example.obd.MainActivity.MainPeace
 import com.example.obd.MainActivity.ModelFragement
 import com.orange.obd.R
 import com.orange_electronic.orangeobd.mmySql.module
@@ -32,11 +33,9 @@ class makeadapter(private val a:ArrayList<module>,val act: Activity,private val 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 holder.image.setImageResource(holder.itemView.resources.getIdentifier(a[position].image,"mipmap",holder.itemView.context.packageName))
         holder.image.setOnClickListener {
-            val args = Bundle()
-            args.putString(HomeFragement.string_make, a[position].make)
+            (act as MainPeace).SelectMake=a[position].make
             val transaction = fragmentManager.beginTransaction()
             val fragement=ModelFragement()
-            fragement.arguments=args
             transaction.replace(R.id.frage, fragement)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                     .addToBackStack(null)

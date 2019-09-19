@@ -25,7 +25,11 @@ import com.orange.obd.R
  *
  */
 class PrivaryPolicy : Fragment() {
+    companion object{
+        var place=0
+    }
 lateinit  var rootview:View
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,11 +39,16 @@ lateinit  var rootview:View
             (activity as MainPeace).finish()
         }
         (rootview.findViewById(R.id.button6) as Button).setOnClickListener {
-            val transaction = fragmentManager!!.beginTransaction()
-            transaction.replace(R.id.frage, Sign_in())
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
-                    .addToBackStack(null)
-                    .commit()
+            if(place==0){
+                val transaction = fragmentManager!!.beginTransaction()
+                transaction.replace(R.id.frage, Sign_in())
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                        .addToBackStack(null)
+                        .commit()
+            }else{
+                (activity as MainPeace).goback()
+            }
+
         }
         return rootview
     }
