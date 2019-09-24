@@ -35,7 +35,7 @@ lateinit var RootView:View
         RootView=inflater.inflate(R.layout.fragment_my_favorite, container, false)
         RootView.menu.setOnClickListener {
             val transaction = fragmentManager!!.beginTransaction()
-            transaction.replace(R.id.frage, HomeFragement())
+            transaction.replace(R.id.frage, HomeFragement(),"Home")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                     .commit()
         }
@@ -48,7 +48,7 @@ lateinit var RootView:View
         }
 //        SetModel()
         Getmodel()
-        adapter=FavAdapter(data)
+        adapter=FavAdapter(data,activity!!,fragmentManager!!)
         re=RootView.findViewById(R.id.adapter)
         re.layoutManager=LinearLayoutManager(activity)
         re.adapter=adapter
@@ -65,7 +65,7 @@ lateinit var RootView:View
         data.clear()
         val profilePreferences = activity!!.getSharedPreferences("Favorite", Context.MODE_PRIVATE)
         val a= profilePreferences.getInt("count",0)
-        for(i in 0..a){
+        for(i in 0 until a){
             var tmpdata=profilePreferences.getString("$i","nodata")
             if (!tmpdata.equals("nodata")){   data.add(tmpdata)}
         }

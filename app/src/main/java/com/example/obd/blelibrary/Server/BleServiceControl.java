@@ -120,9 +120,11 @@ public class BleServiceControl {
             if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action)) {
                 isconnect=true;
 Log.w("s","連線");
+                act.ConnectSituation(true);
             } else if (BluetoothLeService.ACTION_GATT_DISCONNECTED.equals(action)) {
                 Log.w("s","斷線");
                 isconnect=false;
+                act.ConnectSituation(false);
             } else if (BluetoothLeService.ACTION_GATT_SERVICES_DISCOVERED.equals(action)) {
                 Log.w("s","發現服務");
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());

@@ -41,7 +41,13 @@ import kotlin.concurrent.schedule
 open class MainPeace : BleActivity() {
     val itemDAO: ItemDAO by lazy { ItemDAO(applicationContext) }
     override fun onBackStackChanged() {
-
+        if(supportFragmentManager.fragments.get(supportFragmentManager.fragments.size-1).tag!=null&&supportFragmentManager.fragments.get(supportFragmentManager.fragments.size-1).tag=="Home"){
+            val tname=supportFragmentManager.fragments.get(supportFragmentManager.fragments.size-1).tag!!
+        Log.d("name",tname)
+            back.visibility=View.GONE
+        }else{
+            back.visibility=View.VISIBLE
+        }
     }
     var iBinder:IBinder?=null
     var command= Command()
@@ -68,7 +74,7 @@ lateinit var load:RelativeLayout
         savedState = savedInstanceState
         if(savedState != null) onBackStackChanged()
         command.act=this
-        LoadBleUI("Data Loading")
+        LoadBleUI(resources.getString(R.string.Data_Loading))
         DonloadMMy()
         val profilePreferences = getSharedPreferences("Setting", Context.MODE_PRIVATE)
         val handler = Handler()
@@ -83,7 +89,7 @@ lateinit var load:RelativeLayout
         }else{
                 feage.setBackgroundColor(R.color.backgroung)
                 val transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.frage, HomeFragement())
+                transaction.replace(R.id.frage, HomeFragement(),"Home")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                         .commit()
         }
@@ -105,8 +111,9 @@ fun DonloadMMy(){
             Log.d("連線","連線ok")
         } else {
             Log.d("連線","Bluetooth is disconnected")
+            LoadingSuccessUI()
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frage, HomeFragement())
+            transaction.replace(R.id.frage, HomeFragement(),"Home")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                     .commit()
         }

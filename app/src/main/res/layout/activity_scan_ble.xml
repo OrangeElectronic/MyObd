@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center"
-            android:text="Select Device"
+            android:text="@string/SelectDevice"
             android:textColor="@android:color/background_light"
             android:textSize="17sp" />
 
@@ -50,7 +50,7 @@
             android:layout_marginBottom="10dp"
             android:background="@color/colorPrimaryDark"
             android:onClick="close"
-            android:text="cancel"
+            android:text="@string/cancel"
             android:textColor="@android:color/background_light" />
     </RelativeLayout>
 

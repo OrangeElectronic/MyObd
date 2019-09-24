@@ -30,7 +30,7 @@
         android:layout_below="@id/imageView15"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="Three ways to vehicle data selection"
+        android:text="@string/Three_ways"
         android:textSize="20sp" />
 
     <LinearLayout
@@ -107,7 +107,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
                 android:gravity="center"
-                android:text="My Favorite" />
+                android:text="@string/My_favorite" />
         </RelativeLayout>
     </LinearLayout>
 

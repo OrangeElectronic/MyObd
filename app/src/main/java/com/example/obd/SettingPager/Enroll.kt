@@ -129,7 +129,7 @@ rootview.cancel.setOnClickListener {
                         val profilePreferences = act.getSharedPreferences("Setting", Context.MODE_PRIVATE)
                         profilePreferences.edit().putString("admin",email).putString("password",password).commit()
                         val transaction = fragmentManager!!.beginTransaction()
-                        transaction.replace(R.id.frage, HomeFragement())
+                        transaction.replace(R.id.frage, HomeFragement(),"Home")
                                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                                 .commit()
                     }

@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.util.Log
 import android.view.KeyEvent
+import android.widget.Toast
 import com.example.obd.MainActivity.HomeFragement
 import com.example.obd.MainActivity.MainPeace
 import com.example.obd.MainActivity.Selection
@@ -32,6 +33,7 @@ open class BleActivity : AppCompatActivity(), FragmentManager.OnBackStackChanged
     var ConnectDelay=10
     var bleServiceControl = BleServiceControl()
      var timer=Timer()
+    var id=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -69,7 +71,7 @@ open class BleActivity : AppCompatActivity(), FragmentManager.OnBackStackChanged
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun Event(a: ConnectBle) {
-        LoadBleUI("Connecting")
+        LoadBleUI(resources.getString(R.string.paired_with_your_device))
         bleServiceControl.connect(a.reback)
         Thread{
             var fal=0
@@ -93,7 +95,11 @@ open class BleActivity : AppCompatActivity(), FragmentManager.OnBackStackChanged
         if (boolean) {
             Log.d("連線","連線ok")
         } else {
+            LoadingSuccessUI()
             Log.d("連線","Bluetooth is disconnected")
+            handler.post {
+                Toast.makeText(this,"Bluetooth is disconnected",Toast.LENGTH_SHORT).show()
+            }
         }
     }
     open fun RX(a:String){
@@ -110,12 +116,13 @@ open class BleActivity : AppCompatActivity(), FragmentManager.OnBackStackChanged
             Log.w("error", e.message)
         }
     }
-    open fun GoScanner(Translation:Fragment,DelayTime:Int){
+    open fun GoScanner(Translation:Fragment,DelayTime:Int,id:Int){
         ConnectDelay=DelayTime
         this.Translation=Translation
+        this.id=id
         if(bleServiceControl.isconnect){
             val transaction = supportFragmentManager!!.beginTransaction()
-            transaction.replace(R.id.frage, Translation)
+            transaction.replace(id, Translation)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                     .addToBackStack(null)
                     .commit()

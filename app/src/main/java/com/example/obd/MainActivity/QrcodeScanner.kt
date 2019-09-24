@@ -83,7 +83,7 @@ class QrcodeScanner : Fragment(), ZXingScannerView.ResultHandler{
         }else{
             val contents=rawResult!!.text.split("*")
             if(contents.size==3){
-                act.itemDAO.GoOk(contents[1],fragmentManager!!,act)
+                act.itemDAO.GoOk(contents[0],fragmentManager!!,act)
             }
 
         }

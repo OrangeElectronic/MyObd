@@ -70,7 +70,7 @@ class AddFavorite : Fragment() {
             if(rootview.model.selectedItem==null){  return@setOnClickListener}
             if(rootview.make.selectedItem==null){  return@setOnClickListener}
             if(rootview.year.selectedItem==null){ return@setOnClickListener }
-            if(!data.contains("${rootview.make.selectedItem}/${rootview.model.selectedItem}/${rootview.year.selectedItem}")){ data.add("${rootview.make.selectedItem}/${rootview.model.selectedItem}/${rootview.year.selectedItem}")}
+            if(!data.contains("${rootview.make.selectedItem}☆${rootview.model.selectedItem}☆${rootview.year.selectedItem}")){ data.add("${rootview.make.selectedItem}☆${rootview.model.selectedItem}☆${rootview.year.selectedItem}")}
             SetFav()
             act.goback()
         }
@@ -111,7 +111,7 @@ class AddFavorite : Fragment() {
         data.clear()
         val profilePreferences = activity!!.getSharedPreferences("Favorite", Context.MODE_PRIVATE)
         val a= profilePreferences.getInt("count",0)
-        for(i in 0..a){
+        for(i in 0 until a){
             var tmpdata=profilePreferences.getString("$i","nodata")
             if (!tmpdata.equals("nodata")){   data.add(tmpdata)}
         }

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.obd.UserManual.UserManual
 import com.example.obd.blelibrary.ScanBle
 
 import com.orange.obd.R
@@ -55,8 +56,15 @@ class HomeFragement : Fragment() {
 //                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
 //                        .addToBackStack(null)
 //                        .commit()
-          act.GoScanner(Selection(),10)
+          act.GoScanner(Selection(),10,R.id.frage)
           act.back.visibility=View.VISIBLE
+        }
+        rootView.imageView6.setOnClickListener {
+            val transaction = fragmentManager!!.beginTransaction()
+            transaction.replace(R.id.frage, UserManual())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                    .addToBackStack(null)
+                    .commit()
         }
         act.back.visibility=View.GONE
         return rootView

@@ -29,7 +29,7 @@ class ReProgram : AppCompatActivity() {
             R.id.textView14->{
                 this.finish()
                 val transaction =  (application as Myapp).act.supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.frage, HomeFragement())
+                transaction.replace(R.id.frage, HomeFragement(),"Home")
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                         .commit()
             }

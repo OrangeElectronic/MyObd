@@ -298,4 +298,8 @@
     <string name="update_success">Aggiornato con successo</string>
     <string name="need_upadte">Si prega di aggiornare all\'ultima versione</string>
     <string name="is_latest">Per aggiornare all\'ultima versione</string>
+    <string name="OBDII_relearn">OBDII relearn</string>
+    <string name="My_favorite">Preferiti</string>
+    <string name="Three_ways">Tre modi per selezionare i dati del veicolo</string>
+    <string name="Programming">Programmazione</string>
 </resources>

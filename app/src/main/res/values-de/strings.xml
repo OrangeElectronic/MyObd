@@ -122,6 +122,7 @@
     <string name="Pair">Pair</string>
     <string name="Program_sensor">Program sensor</string>
     <string name="Programming_do_not_move_sensors">Programmierung, bitte Sensor nicht bewegen</string>
+    <string name="Programming">Programmierung</string>
     <string name="Next">Nächster</string>
     <string name="Programming_failed_where">Fehler (Fehler bei Reifenposition)</string>
     <string name="Get_location">Die Ortungsfunktion muss aktiviert sein,
@@ -226,4 +227,7 @@
     <string name="update_success">Erfolgreich aktualisiert</string>
     <string name="need_upadte">Bitte aktualisieren Sie auf die neueste Version</string>
     <string name="is_latest">Um auf die neueste Version zu aktualisieren</string>
+    <string name="OBDII_relearn">OBDII relearn</string>
+    <string name="My_favorite">mein Favorit</string>
+    <string name="Three_ways">Drei Wege um Fahrzeugdaten auszuwählen</string>
 </resources>

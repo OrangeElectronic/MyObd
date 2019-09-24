@@ -150,7 +150,7 @@ class Key_ID : Fragment() {
             if (rootView.lrt3.getText().length >= 6 && rootView.lrt3.getText().length <= need) {
                 write.add(rootView.lrt3.getText().toString())
             }
-            act.LoadBleUI("Pogramming")
+            act.LoadBleUI(resources.getString(R.string.Programming))
             Thread{
                 val iscuss=act.command.setTireId(write)
                 handler.post {
@@ -162,7 +162,7 @@ class Key_ID : Fragment() {
             }.start()
         }
         rootView.scaner.setOnClickListener{
-            act.LoadBleUI("Data Loading")
+            act.LoadBleUI(resources.getString(R.string.Data_Loading))
             Downs19()
             rootView.Select_Key.visibility=View.GONE
             scanner.Scan_For=scanner.ID
@@ -195,7 +195,7 @@ class Key_ID : Fragment() {
                 RequestPermission() }
             SCAN_OR_KEY=0
         }
-        rootView.keyin.setOnClickListener { act.LoadBleUI("Data Loading")
+        rootView.keyin.setOnClickListener {     act.LoadBleUI(resources.getString(R.string.Data_Loading))
             Downs19()
             rootView.Select_Key.visibility=View.GONE}
         updateui(WAIT)
@@ -216,12 +216,13 @@ class Key_ID : Fragment() {
                     if(!act.command.HandShake()){
                         act.command.Reboot()
                     }
-                    val Pro=act.command.HandShake()&& act.command.WriteFlash(act,directfit,296)
+                    val Pro=act.command.HandShake()&& act.command.WriteFlash(act,directfit,296,act)
                     handler.post {
                         act.back.isEnabled=true
-                        if(Pro){      Toast.makeText(activity,"燒錄成功",Toast.LENGTH_SHORT).show();}else{
-                            Toast.makeText(activity,"燒錄失敗",Toast.LENGTH_SHORT).show();
-
+                        if(Pro){
+//                            Toast.makeText(activity,"燒錄成功",Toast.LENGTH_SHORT).show();
+                        }else{
+//                            Toast.makeText(activity,"燒錄失敗",Toast.LENGTH_SHORT).show();
                             val intent = Intent(act,ReProgram::class.java)
                             startActivity(intent)
                             updateui(FAIL)
@@ -242,7 +243,7 @@ var handler=Handler()
     fun updateui(condition:Int){
         when(condition){
             SUCCESS->{
-                rootView.condition.text="Programming complete"
+                rootView.condition.text=resources.getString(R.string.Programming_completed)
                 rootView.condition.setTextColor(resources.getColor(R.color.buttoncolor))
                 rootView.Lft.setBackgroundResource(R.mipmap.icon_input_box_ok)
                 rootView.Rft.setBackgroundResource(R.mipmap.icon_input_box_ok)
@@ -254,7 +255,7 @@ var handler=Handler()
                 rootView.Rr.setBackgroundResource(R.mipmap.icon_tire_ok)
             }
             FAIL->{
-                rootView.condition.text="Program failed"
+                rootView.condition.text=resources.getString(R.string.Programming_failed)
                 rootView.condition.setTextColor(resources.getColor(R.color.colorPrimary))
                 rootView.Lft.setBackgroundResource(R.mipmap.icon_input_box_fail)
                 rootView.Rft.setBackgroundResource(R.mipmap.icon_input_box_fail)
@@ -266,7 +267,7 @@ var handler=Handler()
                 rootView.Rr.setBackgroundResource(R.mipmap.icon_tire_fail)
             }
             WAIT->{
-                rootView.condition.text="Key in the Original sensor ID number"
+                rootView.condition.text=resources.getString(R.string.Key_in_the_original_sensor_ID_number)
                 rootView.condition.setTextColor(resources.getColor(R.color.buttoncolor))
                 rootView.Lft.setBackgroundResource(R.mipmap.icon_input_box_locked)
                 rootView.Rft.setBackgroundResource(R.mipmap.icon_input_box_locked)

@@ -209,6 +209,7 @@
     <string name="Pair">Pair</string>
     <string name="Program_sensor">Program sensor</string>
     <string name="Programming_do_not_move_sensors">Programming, do not move sensors.</string>
+    <string name="Programming">Programming</string>
     <string name="Next">Next</string>
     <string name="error">error</string>
     <string name="Programming_failed_where">Program fail,( Failed tire position )</string>
@@ -348,4 +349,7 @@
     <string name="update_success">update completed</string>
     <string name="need_upadte">Please update to the latest version</string>
     <string name="is_latest">To update to the latest version</string>
+    <string name="OBDII_relearn">OBDII relearn</string>
+    <string name="My_favorite">My favorite</string>
+    <string name="Three_ways">Three ways to vehicle data selection</string>
 </resources>

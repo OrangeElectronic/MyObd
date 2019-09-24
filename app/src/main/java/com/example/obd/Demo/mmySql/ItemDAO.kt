@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentTransaction
 import android.util.Log
 import com.example.obd.FunctionPage.Key_ID
+import com.example.obd.FunctionPage.OBDII_relearn
 import com.example.obd.MainActivity.HomeFragement
 import com.example.obd.MainActivity.MainPeace
 import com.orange.obd.R
@@ -155,7 +156,7 @@ class ItemDAO(context: Context) {
         }
     }
     fun GoOk(code:String,fragmentManager: FragmentManager,activity: MainPeace){
-        val sql="select  `Make`,`Model`,`Year`,`Make_Img`  from `Summary table` where `Direct Fit` not in('NA') and `Make_Img` not in('NA') and `MMY number`='$code' limit 0,1"
+        val sql="select  `Make`,`Model`,`Year`,`Make_Img`  from `Summary table` where `OBD1` not in('NA') and `Make_Img` not in('NA') and `MMY number`='$code' limit 0,1"
         val result = db.rawQuery(
                 sql,null)
         if(result.count > 0){
@@ -165,7 +166,7 @@ class ItemDAO(context: Context) {
                 activity.SelectModel=result.getString(1)
                 activity.SelectYear=result.getString(2)
                 val transaction = fragmentManager.beginTransaction()
-                val fragement= Key_ID()
+                val fragement= OBDII_relearn()
                 transaction.replace(R.id.frage,fragement )
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                         .addToBackStack(null)

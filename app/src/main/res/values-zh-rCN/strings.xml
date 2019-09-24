@@ -279,4 +279,8 @@
     <string name="update_success">更新成功</string>
     <string name="need_upadte">请更新至最新版本</string>
     <string name="is_latest">以更新至最新版本</string>
+    <string name="OBDII_relearn">OBDII 学码</string>
+    <string name="My_favorite">我的最愛</string>
+    <string name="Three_ways">三种方式选取车辆资讯</string>
+    <string name="Programming">烧录中</string>
 </resources>

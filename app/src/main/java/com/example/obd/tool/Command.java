@@ -3,7 +3,9 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.example.obd.MainActivity.MainPeace;
 import com.example.obd.blelibrary.BleActivity;
+import com.orange.obd.R;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -62,7 +64,7 @@ public  class Command {
     }
    private static Handler handler=new Handler() ;
 // 燒寫&amp;驗證Flash
-    public  boolean WriteFlash(final Context context,final String FileName,final int Ind){
+    public  boolean WriteFlash(final Context context, final String FileName, final int Ind, final MainPeace act){
                 try{
                     FileInputStream fo=new FileInputStream(context.getApplicationContext().getFilesDir().getPath()+"/"+FileName+".s19");
                     InputStreamReader fr = new InputStreamReader(fo);
@@ -90,6 +92,12 @@ if(b>=255){b=b-255;}
                             String data=bytesToHex(sb.substring(i*Ind, sb.length()).getBytes());
                             int length=sb.substring(i*Ind, sb.length()).getBytes().length+3;
                             act.getBleServiceControl().WriteCmd(Convvvert(data,Integer.toHexString(length),cont),16);
+                            act.getHandler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    act.LoadBleUI(act.getResources().getString(R.string.Programming)+"..."+"100%");
+                                }
+                            });
                             return true;
                         }else{
                             String data=bytesToHex(sb.substring(i*Ind, i*Ind+Ind).getBytes());
@@ -98,6 +106,14 @@ if(b>=255){b=b-255;}
                             if(!check(Convvvert(data,Integer.toHexString(length),cont))){
                                 return false;
                             }
+                            final float finalI = i;
+                            final float finalLong = Long;
+                            act.getHandler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    act.LoadBleUI(act.getResources().getString(R.string.Programming)+"..."+(int)(finalI / finalLong*100)+"%");
+                                }
+                            });
                         }
                     }
                     fr.close();
@@ -197,6 +213,7 @@ while (true){
             Date past=sdf.parse(sdf.format(new Date()));
             int fal=0;
             while(fal<20){
+//                Thread.currentThread().sleep(20);
                 Date now=sdf.parse(sdf.format(new Date()));
                 double time=getDatePoor(now,past);
                 if(time>0.3){
