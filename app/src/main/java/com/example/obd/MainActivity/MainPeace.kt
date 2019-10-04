@@ -20,6 +20,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import com.airbnb.lottie.LottieAnimationView
+import com.example.obd.FunctionPage.Key_ID
 import com.example.obd.Myapp
 import com.example.obd.blelibrary.BleActivity
 import com.orange.obd.R
@@ -116,6 +117,9 @@ fun DonloadMMy(){
             transaction.replace(R.id.frage, HomeFragement(),"Home")
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                     .commit()
+            Key_ID.s19=""
+            TakeOut.DS_OR_CO=0
+            startActivity(Intent(this,TakeOut::class.java))
         }
     }
     override fun LoadBleUI(a:String){   textView.text=a

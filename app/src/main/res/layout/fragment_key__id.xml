@@ -24,20 +24,37 @@
         android:textColorHint="@color/white"
         android:textSize="14sp" />
 
-    <Button
-        android:id="@+id/program"
+    <LinearLayout
+        android:id="@+id/lin"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="0.5dp"
-        android:layout_weight="1"
-        android:background="@color/buttoncolor"
-        android:text="@string/START"
-        android:textColor="@color/white"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/repr"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="0.5dp"
+            android:layout_weight="1"
+            android:background="@color/buttoncolor"
+            android:text="@string/RE_PROGRAM"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/program"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="0.5dp"
+            android:layout_weight="1"
+            android:background="@color/buttoncolor"
+            android:text="@string/START"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/mmy_text"
@@ -68,7 +85,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/program"
+        android:layout_above="@id/lin"
         android:layout_below="@id/condition"
         android:layout_marginBottom="55dp">
 

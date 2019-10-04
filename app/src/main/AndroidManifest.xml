@@ -27,9 +27,12 @@
         android:supportsRtl="true"
         android:theme="@style/MainAppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.example.obd.blelibrary.BleActivity"></activity>
-        <activity android:name="com.example.obd.FunctionPage.ReProgram"
-            android:theme="@style/SwipTheme"/>
+        <activity android:name="com.example.obd.MainActivity.TakeOut"
+            android:theme="@style/SwipTheme" />
+        <activity android:name="com.example.obd.blelibrary.BleActivity" />
+        <activity
+            android:name="com.example.obd.FunctionPage.ReProgram"
+            android:theme="@style/SwipTheme" />
         <activity android:name="com.example.obd.MainActivity.LogoActvivty">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

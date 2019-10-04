@@ -6,6 +6,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.orange.obd.R;
+
 /**
  * The <code>CustomTextWatcher</code> class is used to add a TextWatcher to the
  * list of those whose methods are called whenever this TextView's text changes.
@@ -24,7 +26,7 @@ public class CustomTextWatcher implements TextWatcher {
     private int mSelection;
 
     private String mLastText;
-
+    private int count;
     /**
      * The editText to edit text.
      */
@@ -36,9 +38,10 @@ public class CustomTextWatcher implements TextWatcher {
      * @param editText
      *        the editText to edit text.
      */
-    public CustomTextWatcher(EditText editText) {
+    public CustomTextWatcher(EditText editText,int count) {
 
         super();
+        this.count=count;
         mFormat = false;
         mInvalid = false;
         mLastText = "";
@@ -133,7 +136,9 @@ public class CustomTextWatcher implements TextWatcher {
                 mLastText = text.toString();
                 mEditText.setText(text);
             }
-
+            if(mEditText.getText().toString().length()==count){mEditText.setBackgroundResource(R.mipmap.icon_input_box_write);}else {
+                mEditText.setBackgroundResource(R.mipmap.icon_input_box_locked);
+            }
         } catch (Exception e) {
             Log.i(TAG, e.toString());
         }

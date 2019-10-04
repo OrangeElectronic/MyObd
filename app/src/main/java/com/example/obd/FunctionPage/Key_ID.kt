@@ -18,12 +18,16 @@ import android.widget.Toast
 import com.example.obd.MainActivity.HomeFragement
 import com.example.obd.MainActivity.MainPeace
 import com.example.obd.MainActivity.QrcodeScanner
+import com.example.obd.MainActivity.TakeOut
+import com.example.obd.Myapp
 
 import com.orange.obd.R
 import com.example.obd.tool.CustomTextWatcher
 import com.example.obd.tool.FtpManager.DownS19
 import com.orango.electronic.orangetxusb.mmySql.ItemDAO
+import kotlinx.android.synthetic.main.fragment_key__id.*
 import kotlinx.android.synthetic.main.fragment_key__id.view.*
+import kotlinx.android.synthetic.main.fragment_key__id.view.Lft
 import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
@@ -42,6 +46,7 @@ class Key_ID : Fragment() {
         val SUCCESS=0
         val FAIL=1
         val WAIT=2
+        var s19=""
     }
     var first=true
     var ScanLf=""
@@ -55,6 +60,7 @@ class Key_ID : Fragment() {
     var ShowSelect=true
     var SCAN_OR_KEY=1
     var need=8
+    var ProgranFinsh=false
     override fun onResume() {
         super.onResume()
         first=true
@@ -63,11 +69,14 @@ class Key_ID : Fragment() {
         rootView.Rft.setText(ScanRf)
         rootView.Lrt.setText(ScanLr)
         rootView.lrt3.setText(ScanSp)
+        if(ProgranFinsh){
+            updateui(SUCCESS)
+        }else{
         rootView.Lft.setBackgroundResource( if (ScanLf.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
         rootView.Rrt.setBackgroundResource( if (ScanRr.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
         rootView.Rft.setBackgroundResource( if (ScanRf.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
         rootView.Lrt.setBackgroundResource( if (ScanLr.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
-        rootView.lrt3.setBackgroundResource( if (ScanSp.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)
+        rootView.lrt3.setBackgroundResource( if (ScanSp.length == need) R.mipmap.icon_input_box_write else R.mipmap.icon_input_box_locked)}
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -77,6 +86,7 @@ class Key_ID : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         act=activity!!as MainPeace
+        retainInstance=true
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -118,12 +128,13 @@ class Key_ID : Fragment() {
          directfit=itemDAO.getPart(make, model, year).directfit
         rootView.mmy_text.text="$make/$model/$year"
         scanner.Idcopy=this
+
         scanner.need=need
-        rootView.Lft.addTextChangedListener(CustomTextWatcher(rootView.Lft))
-        rootView.Rft.addTextChangedListener(CustomTextWatcher(rootView.Rft))
-        rootView.Lrt.addTextChangedListener(CustomTextWatcher(rootView.Lrt))
-        rootView.Rrt.addTextChangedListener(CustomTextWatcher(rootView.Rrt))
-        rootView.lrt3.addTextChangedListener(CustomTextWatcher(rootView.lrt3))
+        rootView.Lft.addTextChangedListener(CustomTextWatcher(rootView.Lft,need))
+        rootView.Rft.addTextChangedListener(CustomTextWatcher(rootView.Rft,need))
+        rootView.Lrt.addTextChangedListener(CustomTextWatcher(rootView.Lrt,need))
+        rootView.Rrt.addTextChangedListener(CustomTextWatcher(rootView.Rrt,need))
+        rootView.lrt3.addTextChangedListener(CustomTextWatcher(rootView.lrt3,need))
         rootView.Lft.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
         rootView.lrt3.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
         rootView.Rft.setFilters(arrayOf<InputFilter>(InputFilter.LengthFilter(need)))
@@ -155,7 +166,17 @@ class Key_ID : Fragment() {
                 val iscuss=act.command.setTireId(write)
                 handler.post {
                     act.LoadingSuccessUI()
-                    if(iscuss){     updateui(SUCCESS)}else{
+                    if(iscuss){
+                        ProgranFinsh=true
+                        updateui(SUCCESS)
+                        ScanLf=Lft.text.toString()
+                        ScanRr=Rrt.text.toString()
+                        ScanRf=Rft.text.toString()
+                        ScanLr=Lrt.text.toString()
+                        ScanSp=lrt3.text.toString()
+                        TakeOut.DS_OR_CO=1
+                        act.startActivity(Intent(act,TakeOut::class.java))
+                    }else{
                         updateui(FAIL)
                     }
                 }
@@ -205,9 +226,20 @@ class Key_ID : Fragment() {
         rootView.Lrt.setText(ScanLr)
         rootView.lrt3.setText(ScanSp)
         if(act.itemDAO.IsFiveTire(directfit)){rootView.lrt3.visibility=View.VISIBLE}else{rootView.lrt3.visibility=View.GONE}
+        rootView.repr.setOnClickListener {
+           act.supportFragmentManager.popBackStack()
+            val transaction = fragmentManager!!.beginTransaction()
+            transaction.replace(R.id.frage,Key_ID() )
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
+                    .addToBackStack(null)
+                    .commit()
+        }
         return rootView
     }
     fun Downs19(){
+        if(s19==directfit){
+            act.LoadingSuccessUI()
+            return}
         handler.post { act.back.isEnabled=false }
         Thread{
            val a= DownS19(directfit,act)
@@ -221,6 +253,7 @@ class Key_ID : Fragment() {
                         act.back.isEnabled=true
                         if(Pro){
 //                            Toast.makeText(activity,"燒錄成功",Toast.LENGTH_SHORT).show();
+                            s19=directfit
                         }else{
 //                            Toast.makeText(activity,"燒錄失敗",Toast.LENGTH_SHORT).show();
                             val intent = Intent(act,ReProgram::class.java)
@@ -241,6 +274,7 @@ class Key_ID : Fragment() {
     }
 var handler=Handler()
     fun updateui(condition:Int){
+        rootView.repr.visibility=View.GONE
         when(condition){
             SUCCESS->{
                 rootView.condition.text=resources.getString(R.string.Programming_completed)
@@ -253,6 +287,7 @@ var handler=Handler()
                 rootView.Rf.setBackgroundResource(R.mipmap.icon_tire_ok)
                 rootView.Lr.setBackgroundResource(R.mipmap.icon_tire_ok)
                 rootView.Rr.setBackgroundResource(R.mipmap.icon_tire_ok)
+                rootView.repr.visibility=View.VISIBLE
             }
             FAIL->{
                 rootView.condition.text=resources.getString(R.string.Programming_failed)

@@ -21,6 +21,7 @@ class ReProgram : AppCompatActivity() {
                 this.finish()
                 val fragement= Key_ID()
                 val transaction =  (application as Myapp).act.supportFragmentManager.beginTransaction()
+                (application as Myapp).act.supportFragmentManager.fragments.removeAt((application as Myapp).act.supportFragmentManager.fragments.size-1)
                 transaction.replace(R.id.frage,fragement )
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)//設定動畫
                         .addToBackStack(null)
